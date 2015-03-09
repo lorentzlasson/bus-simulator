@@ -1,0 +1,7 @@
+applications:
+- name: Bus Simulator
+  memory: 512M
+  instances: 1
+  no-route: true
+  buildpack: https://github.com/cloudfoundry/java-buildpack.git
+  path: BusSimulator.jar
