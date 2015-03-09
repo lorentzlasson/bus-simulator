@@ -3,14 +3,14 @@
     <!--this file was created by Eclipse Runnable JAR Export Wizard-->
     <!--ANT 1.7 is required                                        -->
     <target name="create_run_jar">
-        <jar destfile="/Users/lorentzlasson/Development/Workspaces/workspace/BusSimulator/BusSimulator.jar" filesetmanifest="mergewithoutmain">
+        <jar destfile="/Users/lorentzlasson/Development/Repos/DevOps/IotBusSimulator/BusSimulator.jar" filesetmanifest="mergewithoutmain">
             <manifest>
                 <attribute name="Main-Class" value="Main"/>
                 <attribute name="Class-Path" value="."/>
             </manifest>
-            <fileset dir="/Users/lorentzlasson/Development/Workspaces/workspace/BusSimulator/bin"/>
-            <zipfileset excludes="META-INF/*.SF" src="/Users/lorentzlasson/Development/Workspaces/workspace/BusSimulator/mqtt-client-0.4.1-20140526.040116-93.jar"/>
-            <zipfileset excludes="META-INF/*.SF" src="/Users/lorentzlasson/Development/Workspaces/workspace/BusSimulator/gson-2.3.1.jar"/>
+            <fileset dir="/Users/lorentzlasson/Development/Repos/DevOps/IotBusSimulator/bin"/>
+            <zipfileset excludes="META-INF/*.SF" src="/Users/lorentzlasson/Development/Repos/DevOps/IotBusSimulator/mqtt-client-0.4.1-20140526.040116-93.jar"/>
+            <zipfileset excludes="META-INF/*.SF" src="/Users/lorentzlasson/Development/Repos/DevOps/IotBusSimulator/gson-2.3.1.jar"/>
         </jar>
     </target>
 </project>
