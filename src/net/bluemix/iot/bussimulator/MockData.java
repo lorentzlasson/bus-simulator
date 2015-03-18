@@ -1,3 +1,4 @@
+package net.bluemix.iot.bussimulator;
 import java.io.BufferedReader;
 import java.io.FileReader;
 import java.net.URL;
@@ -6,6 +7,9 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Random;
+
+import net.bluemix.iot.bussimulator.model.BusRoute;
+import net.bluemix.iot.bussimulator.model.Coordinate;
 
 public class MockData {
 

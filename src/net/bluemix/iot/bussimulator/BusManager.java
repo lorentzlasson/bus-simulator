@@ -1,5 +1,10 @@
+package net.bluemix.iot.bussimulator;
+
 import java.util.ArrayList;
 import java.util.List;
+
+import net.bluemix.iot.bussimulator.model.Bus;
+import net.bluemix.iot.bussimulator.mqtt.MqttLayer;
 
 public class BusManager{
 

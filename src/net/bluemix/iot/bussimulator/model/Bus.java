@@ -1,4 +1,7 @@
+package net.bluemix.iot.bussimulator.model;
+
 import java.util.Random;
+import net.bluemix.iot.bussimulator.MockData;
 
 public class Bus {
 	
