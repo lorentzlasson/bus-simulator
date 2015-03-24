@@ -1,16 +1,35 @@
 <?xml version="1.0" encoding="UTF-8" standalone="no"?>
-<project default="create_run_jar" name="Create Runnable Jar for Project BusSimulator">
-    <!--this file was created by Eclipse Runnable JAR Export Wizard-->
-    <!--ANT 1.7 is required                                        -->
-    <target name="create_run_jar">
-        <jar destfile="/Users/lorentzlasson/Development/Repos/DevOps/IotBusSimulator/BusSimulator.jar" filesetmanifest="mergewithoutmain">
-            <manifest>
-                <attribute name="Main-Class" value="Main"/>
-                <attribute name="Class-Path" value="."/>
-            </manifest>
-            <fileset dir="/Users/lorentzlasson/Development/Repos/DevOps/IotBusSimulator/bin"/>
-            <zipfileset excludes="META-INF/*.SF" src="/Users/lorentzlasson/Development/Repos/DevOps/IotBusSimulator/mqtt-client-0.4.1-20140526.040116-93.jar"/>
-            <zipfileset excludes="META-INF/*.SF" src="/Users/lorentzlasson/Development/Repos/DevOps/IotBusSimulator/gson-2.3.1.jar"/>
-        </jar>
-    </target>
+<project default="dist" name="Create Runnable Jar for Project BusSimulator">
+
+	<path id="classpathDir">
+		<fileset dir="libs">
+			<include name="*.jar" />
+		</fileset>
+	</path>
+
+	<target name="init">
+		<tstamp />
+		<mkdir dir="bin" />
+	</target>
+
+	<target name="compile" depends="init" description="compile the source">
+		<copy todir="bin">
+			<fileset file="res/*" />
+		</copy>
+		<javac destdir="bin" includeantruntime="false">
+			<src path="src" />
+			<classpath refid="classpathDir" />
+		</javac>
+	</target>
+
+	<target name="dist" depends="compile">
+		<jar destfile="BusSimulator.jar" filesetmanifest="mergewithoutmain">
+			<fileset dir="bin" />			
+			<manifest>
+				<attribute name="Main-Class" value="net.bluemix.iot.bussimulator.Main" />
+				<attribute name="Class-Path" value="." />
+			</manifest>
+			<zipgroupfileset dir="libs" includes="*.jar" />
+		</jar>
+	</target>
 </project>
