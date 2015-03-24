@@ -1,17 +1,20 @@
-package net.bluemix.iot.bussimulator;
+package net.bluemix.iot.bussimulator.data;
 import java.io.BufferedReader;
-import java.io.FileReader;
-import java.net.URL;
+import java.io.InputStream;
+import java.io.InputStreamReader;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Random;
 
+import net.bluemix.iot.bussimulator.Main;
 import net.bluemix.iot.bussimulator.model.BusRoute;
 import net.bluemix.iot.bussimulator.model.Coordinate;
+import net.bluemix.iot.bussimulator.util.CoordGenerator;
+import net.bluemix.iot.bussimulator.util.Util;
 
-public class MockData {
+public class DataLayer {
 
 	private static Map<String, BusRoute> routes;
 
@@ -19,19 +22,28 @@ public class MockData {
 
 		routes = new HashMap<String, BusRoute>();
 		BusRoute busRoute;
-		
-		// Bus number 1, index1
+
+		// Bus number 1
 		busRoute = new BusRoute(
 				"1",
 				coordinatesFromCsv("/line1.csv"), 
 				true);
 		routes.put(busRoute.getNumber(), busRoute);
-		
-		// Bus number 2, index1
+
+		// Bus number 2
 		busRoute = new BusRoute(
 				"2",
 				coordinatesFromCsv("/line2.csv"), 
 				true);
+
+		routes.put(busRoute.getNumber(), busRoute);
+		
+		// Bus number 3
+		busRoute = new BusRoute(
+				"3",
+				coordinatesFromCrossRoadsCsv("/line3cr.csv"),
+				false);
+
 		routes.put(busRoute.getNumber(), busRoute);
 	}
 
@@ -52,15 +64,15 @@ public class MockData {
 		return randomRoute;
 	}
 
-	@SuppressWarnings("resource")
 	private static Coordinate[] coordinatesFromCsv(String path){
 		BufferedReader br = null;
 		String line = "";
 		String cvsSplitBy = ",";		
 		List<Coordinate> coordinateList = new ArrayList<Coordinate>();
-		URL url = MockData.class.getResource(path);
+		InputStream is = Main.class.getResourceAsStream(path);
+		InputStreamReader isr = new InputStreamReader(is);
 		try {
-			br = new BufferedReader(new FileReader(url.getPath()));
+			br = new BufferedReader(isr);
 			while ((line = br.readLine()) != null) {
 				// use comma as separator
 				String[] entry = line.split(cvsSplitBy);
@@ -73,5 +85,12 @@ public class MockData {
 		}
 		Coordinate[] coordinates = coordinateList.toArray(new Coordinate[coordinateList.size()]);
 		return coordinates;
+	}
+	
+	private static Coordinate[] coordinatesFromCrossRoadsCsv(String path){
+		Coordinate[] checkPoints = coordinatesFromCsv(path);
+		List<Coordinate> listPath = CoordGenerator.createPathFromCheckpoints(checkPoints, 1);
+		Coordinate[] arrPath = Util.listToArray(listPath);
+		return arrPath;				
 	}
 }
