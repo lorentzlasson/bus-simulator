@@ -1,15 +1,19 @@
 package net.bluemix.iot.bussimulator;
 
+import net.bluemix.iot.bussimulator.data.DataLayer;
+import net.bluemix.iot.bussimulator.model.Bus;
+import net.bluemix.iot.bussimulator.model.BusRoute;
+
 public class Main {
 
 	public static void main(String[] args) {
-		MockData.initialize();
-		
+		DataLayer.initializeFromCloudant();
+
 		BusManager busManager = new BusManager();
-		busManager.addBus("1");
-		busManager.addBus("1");
-		busManager.addBus("2");
-		busManager.addBus("2");
+		
+		BusRoute busRoute = DataLayer.getRoute("3");
+		busManager.addBus(new Bus("bus1-1", busRoute));
+		
 		busManager.startBuses();
 	}
 }

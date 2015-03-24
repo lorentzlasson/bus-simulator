@@ -1,6 +1,8 @@
 package net.bluemix.iot.bussimulator.mqtt;
+
 import net.bluemix.iot.bussimulator.BusManager;
 import net.bluemix.iot.bussimulator.model.Bus;
+import net.bluemix.iot.bussimulator.util.Util;
 
 import org.eclipse.paho.client.mqttv3.IMqttDeliveryToken;
 import org.eclipse.paho.client.mqttv3.MqttCallback;
@@ -14,10 +16,10 @@ import com.google.gson.Gson;
 
 public class MqttLayer implements MqttCallback {
 	
-	private static final String pubTopic =	"iot-2/type/BusSimulator/id/%s/evt/bus.position/fmt/json";
-	private static final String subTopic =	"iot-2/type/+/id/+/evt/+/fmt/json";
+	private static final String pubTopic =	"iot-2/type/ibmbus/id/%s/evt/position/fmt/json";
+	private static final String subTopic =	"iot-2/type/ibmbus/id/+/evt/+/fmt/json";
 	private static final String broker = 	"tcp://scvxps.messaging.internetofthings.ibmcloud.com:1883";
-	private static final String clientId = 	"a:scvxps:bussimulator";
+	private static final String clientId = 	"a:scvxps:bussimulator-local";
 	
 	private MqttClient client;
 	@SuppressWarnings("unused")
@@ -43,11 +45,10 @@ public class MqttLayer implements MqttCallback {
 		System.out.println(stringPayload);
 	}
 	
-	public void publishBusMovement(Bus.BusLight bus) {
-		String jsonBus = new Gson().toJson(bus);
-		MqttMessage message = new MqttMessage(jsonBus.getBytes());
+	public void publishBusMovement(Bus bus) {
+		String jsonBus = new Gson().toJson(bus.getLocation());
+		MqttMessage message = new MqttMessage(Util.toDeviceFormat(jsonBus).getBytes());
 		message.setQos(0);
-		
 		String topic = String.format(pubTopic, bus.getId());
 		
 		try {

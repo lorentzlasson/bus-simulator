@@ -1,40 +1,49 @@
 package net.bluemix.iot.bussimulator.model;
 
+import java.security.InvalidParameterException;
 import java.util.Random;
-import net.bluemix.iot.bussimulator.MockData;
+
+import net.bluemix.iot.bussimulator.data.DataLayer;
 
 public class Bus {
 	
-	private enum Direction { FORWARD, BACKWARD };
+	public enum Direction { FORWARD, BACKWARD };
 	
-	private static int counter = 1;
 	private String id;
-	private String number;
-	private BusRoute route;
-	private int station;
+	private BusRoute busRoute;
+	private int routeLocation;
 	private Direction direction;
 	
-	public Bus(String number) {
-		id = String.valueOf(counter++);
-		this.number = number;
-		route = MockData.getRoute(number);
-		// Set random route of number does match
-		if (route == null) route = MockData.getRandomRoute(); 
-		Random random = new Random();
+	public Bus(String id, BusRoute busRoute) {
+		this.id = id;
+		this.busRoute = busRoute;
 		
-		// TODO unless circular
-		direction = Direction.values()[random.nextInt(Direction.values().length)];
-		station = random.nextInt(route.length() - 1);
+		Random random = new Random();		
+		if (busRoute.isCircular()) { // Circular routes has forward as default direction
+			direction = Direction.FORWARD;
+		}
+		else {
+			direction = Direction.values()[random.nextInt(Direction.values().length)];
+		}
+		routeLocation = random.nextInt(busRoute.length() - 1);
+	}
+	
+	public void setDirection(Direction direction){
+		this.direction = direction;
+	}
+	
+	public void setRouteLocation(int routeLocation){
+		this.routeLocation = routeLocation;
 	}
 	
 	public void move(){
-		boolean atLastStation = station == route.length() - 1;
-		boolean atFirstStation = station == 0;
+		boolean atLastStation = routeLocation == busRoute.length() - 1;
+		boolean atFirstStation = routeLocation == 0;
 		boolean outOfBoundsBackward = atFirstStation && direction == Direction.BACKWARD;
 		boolean outOfBoundsForward = atLastStation && direction == Direction.FORWARD;
 		
 		// Ensure correct direction
-		if (!route.isCircular()) {
+		if (!busRoute.isCircular()) {
 			if (outOfBoundsBackward){
 				direction = Direction.FORWARD;
 			}
@@ -42,26 +51,26 @@ public class Bus {
 				direction = Direction.BACKWARD;
 			}
 
-			if(direction == Direction.FORWARD) station ++;
-			else if(direction == Direction.BACKWARD) station--;	
+			if(direction == Direction.FORWARD) routeLocation ++;
+			else if(direction == Direction.BACKWARD) routeLocation--;	
 		}
 		else {
 			// offsets station by 1
 			if (outOfBoundsForward) {
-				station = 0;
+				routeLocation = 0;
 			}
 			else if (outOfBoundsBackward) {
-				station = route.length() - 1;
+				routeLocation = busRoute.length() - 1;
 			}
 			else {
-				if(direction == Direction.FORWARD) station ++;
-				else if(direction == Direction.BACKWARD) station--;					
+				if(direction == Direction.FORWARD) routeLocation ++;
+				else if(direction == Direction.BACKWARD) routeLocation--;					
 			}
 		}
 	}
 	
 	public Coordinate getLocation(){
-		return route.location(station);
+		return busRoute.location(routeLocation);
 	}
 	
 	public String getId() {
@@ -69,29 +78,29 @@ public class Bus {
 	}
 	
 	public String toString() {
-		String representaton = String.format("[Number: %s, Direction: %s]", number, direction);
+		String representaton = String.format("[Number: %s, Direction: %s]", busRoute.getNumber(), direction);
 		return representaton;
 	}
 	
 	public String asLocation() {
 		Coordinate location = getLocation();
-		String representaton = String.format("[%s:%s]: (%f,%f)", number, id, location.getLatitude(), location.getLongitude());
+		String representaton = String.format("[%s:%s]: (%f,%f)", busRoute.getNumber(), id, location.getLatitude(), location.getLongitude());
 		return representaton;
 	}
 	
-	public Bus.BusLight getBusLight() {
-		return new BusLight(this);
+	public Bus.BusMinified getBusLight() {
+		return new BusMinified(this);
 	}
-	
+
 	@SuppressWarnings("unused")
-	public class BusLight {
+	public class BusMinified {
 		
-		private String id, line;
+		private String id, routeNumber;
 		private double latitude, longitude;
 		
-		public BusLight(Bus bus) {
+		public BusMinified(Bus bus) {
 			this.id = bus.id;
-			this.line = bus.number;
+			this.routeNumber = bus.busRoute.getNumber();
 			Coordinate coord = bus.getLocation();
 			this.latitude = coord.getLatitude();
 			this.longitude = coord.getLongitude();

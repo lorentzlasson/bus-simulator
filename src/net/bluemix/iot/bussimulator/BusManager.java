@@ -16,8 +16,7 @@ public class BusManager{
 		this.mqtt = new MqttLayer(this);
 	}
 	
-	public void addBus(String number) {
-		Bus bus = new Bus(number);
+	public void addBus(Bus bus) {
 		buses.add(bus);
 		System.out.println(bus);
 	}
@@ -44,7 +43,7 @@ public class BusManager{
 	private void publishBuses(){
 		for (Bus bus : buses) {
 //			System.out.println(bus.asLocation());
-			mqtt.publishBusMovement(bus.getBusLight());
+			mqtt.publishBusMovement(bus);
 		}
 	}
 }
