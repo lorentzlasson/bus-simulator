@@ -1,9 +1,6 @@
 package net.bluemix.iot.bussimulator.model;
 
-import java.security.InvalidParameterException;
 import java.util.Random;
-
-import net.bluemix.iot.bussimulator.data.DataLayer;
 
 public class Bus {
 	

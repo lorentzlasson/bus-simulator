@@ -26,6 +26,14 @@ public class Coordinate {
 		this.longitude = longitude;
 	}
 	
+	public boolean isStation() {
+		return station;
+	}
+
+	public void setStation(boolean station) {
+		this.station = station;
+	}
+
 	public String toString() {
 		return String.format("[%f; %f]", latitude, longitude);
 	}
