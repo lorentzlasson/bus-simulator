@@ -21,7 +21,7 @@ import com.google.gson.JsonObject;
 
 public class MqttLayer implements MqttCallback {
 	
-	private static final String pubTopic		=	"iot-2/type/ibmbus/id/%s/evt/position/fmt/json";
+	private static final String pubTopic		=	"iot-2/type/ibmbus2/id/%s/evt/position/fmt/json";
 	private static final String allCmdTopic		=	"iot-2/type/+/id/+/cmd/+/fmt/json";
 	private static final String allEvtTopic		=	"iot-2/type/+/id/+/evt/+/fmt/json";
 	
@@ -39,7 +39,7 @@ public class MqttLayer implements MqttCallback {
 		String apiToken = credentials.getProperty("apiToken");
 		
 		String broker = "tcp://"+org+".messaging.internetofthings.ibmcloud.com:1883";
-		String clientId = "a:"+org+":bussimulator-local";
+		String clientId = "a:"+org+":bussimulator";
 		
 		this.busManager = busManager;
 		try {
