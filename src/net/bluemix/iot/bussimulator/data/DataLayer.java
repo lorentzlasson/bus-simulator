@@ -1,8 +1,12 @@
 package net.bluemix.iot.bussimulator.data;
+
+import java.io.IOException;
+import java.io.InputStream;
 import java.security.InvalidParameterException;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Properties;
 
 import net.bluemix.iot.bussimulator.model.BusRoute;
 import net.bluemix.iot.bussimulator.model.Coordinate;
@@ -11,45 +15,25 @@ import net.bluemix.iot.bussimulator.util.Util;
 
 import com.cloudant.client.api.CloudantClient;
 import com.cloudant.client.api.Database;
+import com.google.gson.JsonObject;
 
 public class DataLayer {
 
 	private static Map<String, BusRoute> routes = new HashMap<String, BusRoute>();
-
-	public static void initializeFromCsv(){
-
-		BusRoute busRoute;
-
-		// Bus number 1
-		busRoute = new BusRoute(
-				"1",
-				Util.coordinatesFromCsv("/line1.csv"), 
-				true);
-		routes.put(busRoute.getNumber(), busRoute);
-
-		// Bus number 2
-		busRoute = new BusRoute(
-				"2",
-				Util.coordinatesFromCsv("/line2.csv"), 
-				true);
-		routes.put(busRoute.getNumber(), busRoute);
-		
-		// Bus number 3
-		busRoute = new BusRoute(
-				"3",
-				Util.coordinatesFromCsv("/line3cr.csv"),
-				false);
-
-		routes.put(busRoute.getNumber(), busRoute);
-	}
+	private Database db;
+	private Properties credentials;
 	
-	public static void initializeFromCloudant(){
+	public DataLayer() {
+		credentials = loadVCapCredentials();
+		if (credentials == null) 
+			credentials = loadProperties();
+				
 		CloudantClient client = new CloudantClient(
-				"https://1505a557-0dfb-47ee-bbdd-b2cf1e770c65-bluemix:fc43906f40140a60d8b37c6e3e36bbb4b6ffcc97615b2c62e425a26d703df8eb@1505a557-0dfb-47ee-bbdd-b2cf1e770c65-bluemix.cloudant.com",
-				"1505a557-0dfb-47ee-bbdd-b2cf1e770c65-bluemix",
-				"fc43906f40140a60d8b37c6e3e36bbb4b6ffcc97615b2c62e425a26d703df8eb");
+				credentials.getProperty("url"),
+				credentials.getProperty("username"),
+				credentials.getProperty("password"));
 
-		Database db = client.database("bus_routes", false);
+		db = client.database("bus_routes", false);
 		List<BusRoute> busRoutes = db.view("_all_docs").includeDocs(true).query(BusRoute.class);
 		for (BusRoute busRoute : busRoutes) {
 			List<Coordinate> path = CoordGenerator.createPathFromCheckpoints(busRoute.getCoordinates(), 2);
@@ -57,10 +41,40 @@ public class DataLayer {
 			routes.put(busRoute.getNumber(), busRoute);
 		}
 	}
+	
+	public void saveRoute(BusRoute busRoute){
+		db.save(busRoute);
+	}
+	
+	public BusRoute getRoute2(String number) throws InvalidParameterException {
+		System.out.println(db.listIndices());
+		return null;
+	}
 
-	public static BusRoute getRoute(String number) throws InvalidParameterException{
+	public BusRoute getRoute(String number) throws InvalidParameterException {
 		BusRoute busRoute = routes.get(number);
 		if (busRoute == null) throw new InvalidParameterException("Route "+number+" does not exist");
 		return busRoute;
+	}
+	
+	private Properties loadVCapCredentials(){
+		JsonObject jsonObj = Util.credentialsFromVCap("cloudantNoSQLDB");
+		if(jsonObj == null) return null;
+		Properties properties = new Properties();
+		properties.setProperty("username", jsonObj.get("username").getAsString());
+		properties.setProperty("password", jsonObj.get("password").getAsString());
+		properties.setProperty("url", jsonObj.get("url").getAsString());
+		return properties;
+	}
+	
+	private Properties loadProperties(){
+		Properties properties = new Properties();
+		InputStream inputStream = getClass().getClassLoader().getResourceAsStream("cloudant.properties");
+		try {
+			properties.load(inputStream);
+		} catch (IOException e) {
+			e.printStackTrace();
+		}
+		return properties;
 	}
 }

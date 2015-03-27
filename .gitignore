@@ -1,5 +1,4 @@
+BusSimulator.jar
 /bin/
 .DS_Store
-*.jar
-!libs/*.jar
 *.properties

@@ -11,6 +11,9 @@ import java.util.List;
 import net.bluemix.iot.bussimulator.Main;
 import net.bluemix.iot.bussimulator.model.Coordinate;
 
+import com.google.gson.JsonObject;
+import com.google.gson.JsonParser;
+
 public class Util {
 	
 	public static String toDeviceFormat(String data){
@@ -27,7 +30,22 @@ public class Util {
 		return list.toArray(array);
 	}
 	
-
+	public static JsonObject credentialsFromVCap(String serviceName){
+		String vCap = System.getenv("VCAP_SERVICES");
+		if(vCap == null) return null;
+		JsonObject jsonObj = new JsonParser().parse(vCap).getAsJsonObject();
+		jsonObj = jsonObj.get(serviceName).getAsJsonArray().get(0).getAsJsonObject();
+		jsonObj = jsonObj.get("credentials").getAsJsonObject();
+		return jsonObj;
+	}
+	
+	public static String jsonValueFromAttribute(String json, String attr){
+		int indexStart = json.indexOf(attr) + attr.length();
+		int indexEnd = json.indexOf("\"", indexStart);
+		String jsonValue = json.substring(indexStart, indexEnd);
+		return jsonValue;
+	}
+	
 	public static Coordinate[] coordinatesFromCsv(String path){
 		BufferedReader br = null;
 		String line = "";

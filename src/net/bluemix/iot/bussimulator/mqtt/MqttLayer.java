@@ -17,6 +17,7 @@ import org.eclipse.paho.client.mqttv3.MqttMessage;
 import org.eclipse.paho.client.mqttv3.persist.MemoryPersistence;
 
 import com.google.gson.Gson;
+import com.google.gson.JsonObject;
 
 public class MqttLayer implements MqttCallback {
 	
@@ -24,15 +25,18 @@ public class MqttLayer implements MqttCallback {
 	private static final String allCmdTopic		=	"iot-2/type/+/id/+/cmd/+/fmt/json";
 	private static final String allEvtTopic		=	"iot-2/type/+/id/+/evt/+/fmt/json";
 	
-	private Properties properties;
+	private Properties credentials;
 	private MqttClient client;
 	private BusManager busManager;
 
 	public MqttLayer(BusManager busManager) {
-		properties = loadProperties();
-		String org = properties.getProperty("org");
-		String apiKey = properties.getProperty("apiKey");
-		String apiToken = properties.getProperty("apiToken");
+		credentials = loadVCapCredentials();
+		if (credentials == null) 
+			credentials = loadProperties();
+		
+		String org = credentials.getProperty("org");
+		String apiKey = credentials.getProperty("apiKey");
+		String apiToken = credentials.getProperty("apiToken");
 		
 		String broker = "tcp://"+org+".messaging.internetofthings.ibmcloud.com:1883";
 		String clientId = "a:"+org+":bussimulator-local";
@@ -95,13 +99,22 @@ public class MqttLayer implements MqttCallback {
 	
 	private Properties loadProperties(){
 		Properties properties = new Properties();
-		InputStream inputStream = getClass().getClassLoader().getResourceAsStream("config.properties");
+		InputStream inputStream = getClass().getClassLoader().getResourceAsStream("iot.properties");
 		try {
 			properties.load(inputStream);
 		} catch (IOException e) {
-			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
+		return properties;
+	}
+	
+	private Properties loadVCapCredentials(){
+		JsonObject jsonObj = Util.credentialsFromVCap("iotf-service");
+		if(jsonObj == null) return null;
+		Properties properties = new Properties();
+		properties.setProperty("org", jsonObj.get("org").getAsString());
+		properties.setProperty("apiKey", jsonObj.get("apiKey").getAsString());
+		properties.setProperty("apiToken", jsonObj.get("apiToken").getAsString());
 		return properties;
 	}
 	

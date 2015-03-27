@@ -3,7 +3,7 @@ package net.bluemix.iot.bussimulator.model;
 public class Coordinate {
 	
 	private double latitude, longitude;
-	private boolean station;
+	private transient boolean station;
 	
 	public Coordinate(double latitude, double longitude) {
 		this.latitude = latitude;
