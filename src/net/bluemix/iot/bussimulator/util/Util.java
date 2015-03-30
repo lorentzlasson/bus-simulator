@@ -40,7 +40,8 @@ public class Util {
 	}
 	
 	public static String jsonValueFromAttribute(String json, String attr){
-		int indexStart = json.indexOf(attr) + attr.length();
+		String jsonAttr = String.format("\"%s\": \"", attr);
+		int indexStart = json.indexOf(jsonAttr) + jsonAttr.length();
 		int indexEnd = json.indexOf("\"", indexStart);
 		String jsonValue = json.substring(indexStart, indexEnd);
 		return jsonValue;

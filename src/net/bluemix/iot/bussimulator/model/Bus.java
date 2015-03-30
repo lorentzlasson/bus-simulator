@@ -16,12 +16,7 @@ public class Bus {
 		this.busRoute = busRoute;
 		
 		Random random = new Random();		
-		if (busRoute.isCircular()) { // Circular routes has forward as default direction
-			direction = Direction.FORWARD;
-		}
-		else {
-			direction = Direction.values()[random.nextInt(Direction.values().length)];
-		}
+		direction = Direction.values()[random.nextInt(Direction.values().length)];
 		routeLocation = random.nextInt(busRoute.length() - 1);
 	}
 	
@@ -85,7 +80,7 @@ public class Bus {
 		return representaton;
 	}
 	
-	public Bus.BusMinified getBusLight() {
+	public Bus.BusMinified getBusMinified() {
 		return new BusMinified(this);
 	}
 

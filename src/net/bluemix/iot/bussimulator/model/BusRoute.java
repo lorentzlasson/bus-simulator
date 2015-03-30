@@ -7,7 +7,6 @@ public class BusRoute {
 	private Coordinate[] coordinates;
 	
 	public BusRoute(String number, Coordinate[] route, boolean circular) {
-		super();
 		this.coordinates = route;
 		this.circular = circular;
 		this.number = number;
@@ -36,7 +35,4 @@ public class BusRoute {
 	public void setCoordinates(Coordinate[] coordinates) {
 		this.coordinates = coordinates;
 	}
-	
-	
-	
 }

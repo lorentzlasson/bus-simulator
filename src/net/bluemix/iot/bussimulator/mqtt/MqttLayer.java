@@ -67,9 +67,10 @@ public class MqttLayer implements MqttCallback {
 			}
 		}
 		else if (part5.equals("cmd")) {
-			String busDocId = Util.jsonValueFromAttribute(stringPayload, "\"busDocId\": \"");
+			String number = Util.jsonValueFromAttribute(stringPayload, "number");
 			System.out.printf("Command: %s ", topicParts[6]);
-			System.out.printf("busDocId: %s\n", busDocId);
+			System.out.printf("route: %s\n", number);
+			busManager.addBus(number);
 		}
 	}
 	
@@ -84,17 +85,18 @@ public class MqttLayer implements MqttCallback {
 		} catch (MqttException e) {
 			e.printStackTrace();
 		}
+	}
+	
+	public void addNewBus() {
+		String jsonBus = "{\"number\": \"3\"}";
+		MqttMessage message = new MqttMessage(Util.toDeviceFormat(jsonBus).getBytes());
+		message.setQos(0);
 		
-//		String jsonBus = "{\"busDocId\": \"BUS_DOC_ID_1\"}";
-//		MqttMessage message = new MqttMessage(Util.toDeviceFormat(jsonBus).getBytes());
-//		message.setQos(0);
-//		String topic = String.format(pubTopic, bus.getId());
-//		
-//		try {
-//			client.publish("iot-2/type/client/id/tracker/cmd/newbus/fmt/json", message);
-//		} catch (MqttException e) {
-//			e.printStackTrace();
-//		}
+		try {
+			client.publish("iot-2/type/client/id/tracker/cmd/newbus/fmt/json", message);
+		} catch (MqttException e) {
+			e.printStackTrace();
+		}
 	}
 	
 	private Properties loadProperties(){
