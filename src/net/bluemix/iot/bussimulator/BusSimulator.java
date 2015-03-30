@@ -9,6 +9,7 @@ import java.util.concurrent.CopyOnWriteArrayList;
 import net.bluemix.iot.bussimulator.connect.MqttLayer;
 import net.bluemix.iot.bussimulator.connect.RestLayer;
 import net.bluemix.iot.bussimulator.data.DataLayer;
+import net.bluemix.iot.bussimulator.exception.BusSimulatorException;
 import net.bluemix.iot.bussimulator.model.Bus;
 import net.bluemix.iot.bussimulator.model.BusRoute;
 import net.bluemix.iot.bussimulator.util.Util;
@@ -44,16 +45,26 @@ public class BusSimulator{
 			JsonObject jsonBus = registeredBuses.get(i).getAsJsonObject();
 			String id = jsonBus.get("id").getAsString();
 			String number = id.split("bus")[1].split("-")[0]; // between "bus" and "-"
-			BusRoute busRoute = dataLayer.getRoute(number);
-			buses.add(new Bus(id, busRoute));
+			
+			try {
+				BusRoute busRoute = dataLayer.getRoute(number);
+				buses.add(new Bus(id, busRoute));
+			} catch (BusSimulatorException e) {
+				e.printStackTrace();
+			}
 		}
 	}
 
 	public void addBus(String number) {
 		String id = restLayer.registerNewBus(number);
-		BusRoute busRoute = dataLayer.getRoute(number);
-		Bus bus = new Bus(id, busRoute);
-		buses.add(bus);
+		BusRoute busRoute;
+		try {
+			busRoute = dataLayer.getRoute(number);
+			Bus bus = new Bus(id, busRoute);
+			buses.add(bus);
+		} catch (BusSimulatorException e) {
+			e.printStackTrace();
+		}
 	}
 
 	public void startBuses() {

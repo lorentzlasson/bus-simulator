@@ -4,6 +4,7 @@ import java.security.InvalidParameterException;
 import java.util.List;
 
 import net.bluemix.iot.bussimulator.BusSimulator;
+import net.bluemix.iot.bussimulator.exception.BusSimulatorException;
 import net.bluemix.iot.bussimulator.model.BusRoute;
 
 import com.cloudant.client.api.CloudantClient;
@@ -27,7 +28,7 @@ public class DataLayer {
 		db.save(busRoute);
 	}
 
-	public BusRoute getRoute(String number) throws InvalidParameterException {
+	public BusRoute getRoute(String number) throws BusSimulatorException {
 		List<SearchResult<BusRoute>.SearchResultRows> result = db
 				.search("defaultDesign/number")
 				.limit(1)
@@ -35,7 +36,7 @@ public class DataLayer {
 				.querySearchResult("number:"+number, BusRoute.class)
 				.getRows();
 
-		if (result.size() == 0) throw new InvalidParameterException("Route "+number+" does not exist");
+		if (result.size() == 0) throw new BusSimulatorException("Route "+number+" does not exist");
 		
 		BusRoute busRoute = result.get(0).getDoc();
 		return busRoute;
