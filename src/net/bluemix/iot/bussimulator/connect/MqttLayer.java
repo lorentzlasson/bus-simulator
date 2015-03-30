@@ -1,10 +1,10 @@
-package net.bluemix.iot.bussimulator.mqtt;
+package net.bluemix.iot.bussimulator.connect;
 
 import java.io.IOException;
 import java.io.InputStream;
 import java.util.Properties;
 
-import net.bluemix.iot.bussimulator.BusManager;
+import net.bluemix.iot.bussimulator.BusSimulator;
 import net.bluemix.iot.bussimulator.model.Bus;
 import net.bluemix.iot.bussimulator.util.Util;
 
@@ -21,15 +21,15 @@ import com.google.gson.JsonObject;
 
 public class MqttLayer implements MqttCallback {
 	
-	private static final String pubTopic		=	"iot-2/type/ibmbus2/id/%s/evt/position/fmt/json";
+	private static final String pubTopic		=	"iot-2/type/ibmbus/id/%s/evt/position/fmt/json";
 	private static final String allCmdTopic		=	"iot-2/type/+/id/+/cmd/+/fmt/json";
 	private static final String allEvtTopic		=	"iot-2/type/+/id/+/evt/+/fmt/json";
 	
 	private Properties credentials;
 	private MqttClient client;
-	private BusManager busManager;
+	private BusSimulator busManager;
 
-	public MqttLayer(BusManager busManager) {
+	public MqttLayer(BusSimulator busManager) {
 		credentials = loadVCapCredentials();
 		if (credentials == null) 
 			credentials = loadProperties();

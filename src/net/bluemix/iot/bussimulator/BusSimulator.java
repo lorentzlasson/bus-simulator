@@ -3,25 +3,28 @@ package net.bluemix.iot.bussimulator;
 import java.util.List;
 import java.util.concurrent.CopyOnWriteArrayList;
 
+import net.bluemix.iot.bussimulator.connect.MqttLayer;
+import net.bluemix.iot.bussimulator.connect.RestLayer;
 import net.bluemix.iot.bussimulator.data.DataLayer;
 import net.bluemix.iot.bussimulator.model.Bus;
 import net.bluemix.iot.bussimulator.model.BusRoute;
-import net.bluemix.iot.bussimulator.mqtt.MqttLayer;
 
 import com.google.gson.JsonArray;
 import com.google.gson.JsonObject;
 
-public class BusManager{
+public class BusSimulator{
 
 	private static final long INTERVAL_UPDATE = 1000; // 1 second
 	private MqttLayer mqtt;
 	private DataLayer dataLayer;
+	private RestLayer restLayer;
 	private List<Bus> buses;
 
-	public BusManager() {
+	public BusSimulator() {
 		buses = new CopyOnWriteArrayList<Bus>();
 		this.mqtt = new MqttLayer(this);
 		this.dataLayer = new DataLayer();
+		this.restLayer = new RestLayer();
 		initializeBuses();
 	}
 
@@ -39,20 +42,8 @@ public class BusManager{
 		}
 	}
 
-	private int getBusIndex(String number){
-		JsonArray busCounts = dataLayer.getBusRegister();
-		for (int i = 0; i < busCounts.size(); i++) {
-			JsonObject entry = busCounts.get(i).getAsJsonObject();
-			if(entry.get("number").getAsString().equals(number)){
-				return entry.get("count").getAsInt();
-			}
-		}
-		return 0;
-	}
-
 	public void addBus(String number) {
-		int busIndex = getBusIndex(number);
-		String id = String.format("bus%s-%d", number, busIndex);
+		String id = restLayer.registerNewBus(number);
 		BusRoute busRoute = dataLayer.getRoute(number);
 		Bus bus = new Bus(id, busRoute);
 		buses.add(bus);

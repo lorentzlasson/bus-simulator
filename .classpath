@@ -11,5 +11,9 @@
 	<classpathentry kind="lib" path="libs/httpcore-4.4.jar"/>
 	<classpathentry kind="lib" path="libs/mqtt-client-0.4.1-20140526.040116-93.jar"/>
 	<classpathentry kind="lib" path="libs/commons-io-2.4.jar"/>
+	<classpathentry kind="lib" path="libs/httpasyncclient-4.1-beta1.jar"/>
+	<classpathentry kind="lib" path="libs/unirest-java-1.4.5.jar"/>
+	<classpathentry kind="lib" path="libs/httpcore-nio-4.4-beta1.jar"/>
+	<classpathentry kind="lib" path="libs/json-20080701.jar"/>
 	<classpathentry kind="output" path="bin"/>
 </classpath>
