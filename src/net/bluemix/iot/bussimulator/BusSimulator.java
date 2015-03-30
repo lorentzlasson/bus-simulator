@@ -57,17 +57,16 @@ public class BusSimulator{
 	}
 
 	public void startBuses() {
-		int count = 0;
+//		int count = 0;
 		while (true) {
+			// TODO for testing
+//			count++;
+//			if (count % 5 == 0) {
+//				mqtt.addNewBus();
+//			}
 
 			moveBuses();			
 			publishBuses();
-
-			// TODO for testing
-			count++;
-			if (count % 5 == 0) {
-				mqtt.addNewBus();
-			}
 
 			try {
 				Thread.sleep(INTERVAL_UPDATE);
