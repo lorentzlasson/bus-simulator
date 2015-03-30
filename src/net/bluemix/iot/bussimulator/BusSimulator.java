@@ -19,10 +19,10 @@ import com.google.gson.JsonObject;
 public class BusSimulator{
 
 	private static final long INTERVAL_UPDATE = 1000; // 1 second
-	
+
 	public static Properties iotfCredentials;
 	public static Properties cloudantCredentials;
-	
+
 	private MqttLayer mqtt;
 	private DataLayer dataLayer;
 	private RestLayer restLayer;
@@ -31,23 +31,21 @@ public class BusSimulator{
 	public BusSimulator() {
 		loadCredentials();
 		buses = new CopyOnWriteArrayList<Bus>();
+		this.restLayer = new RestLayer();
+//		restLayer.clearRegisterBuses();
 		this.mqtt = new MqttLayer(this);
 		this.dataLayer = new DataLayer();
-		this.restLayer = new RestLayer();
 		initializeBuses();
 	}
 
 	private void initializeBuses() {
-		JsonArray busCounts = dataLayer.getBusRegister();
-		for (int i = 0; i < busCounts.size(); i++) {
-			JsonObject entry = busCounts.get(i).getAsJsonObject();
-			String number = entry.get("number").getAsString();
+		JsonArray registeredBuses = restLayer.getRegisteredBuses();
+		for (int i = 0; i < registeredBuses.size(); i++) {
+			JsonObject jsonBus = registeredBuses.get(i).getAsJsonObject();
+			String id = jsonBus.get("id").getAsString();
+			String number = id.split("bus")[1].split("-")[0]; // between "bus" and "-"
 			BusRoute busRoute = dataLayer.getRoute(number);
-			int count = entry.get("count").getAsInt();
-			for (int j = 0; j < count; j++) {
-				String id = String.format("bus%s-%d", number, (j+1));
-				buses.add(new Bus(id, busRoute));
-			}
+			buses.add(new Bus(id, busRoute));
 		}
 	}
 
@@ -61,12 +59,13 @@ public class BusSimulator{
 	public void startBuses() {
 		int count = 0;
 		while (true) {
-			count++;
 
 			moveBuses();			
 			publishBuses();
 
-			if (count% 5 == 0) {
+			// TODO for testing
+			count++;
+			if (count % 5 == 0) {
 				mqtt.addNewBus();
 			}
 
@@ -101,7 +100,7 @@ public class BusSimulator{
 			iotfCredentials = loadProperties("iotf");
 		}
 	}
-	
+
 	private Properties loadVCapCredentials(String service, String... propertyNames){
 		JsonObject jsonObj = Util.credentialsFromVCap(service);
 		Properties properties = new Properties();
