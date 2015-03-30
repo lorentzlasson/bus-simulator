@@ -6,6 +6,7 @@ import java.security.InvalidParameterException;
 import java.util.List;
 import java.util.Properties;
 
+import net.bluemix.iot.bussimulator.BusSimulator;
 import net.bluemix.iot.bussimulator.model.BusRoute;
 import net.bluemix.iot.bussimulator.util.Util;
 
@@ -20,18 +21,15 @@ import com.google.gson.JsonParser;
 
 public class DataLayer {
 
-	private Properties credentials;
 	private Database db;
 
 	public DataLayer() {
-		credentials = loadVCapCredentials();
-		if (credentials == null) 
-			credentials = loadProperties();
+
 
 		CloudantClient client = new CloudantClient(
-				credentials.getProperty("url"),
-				credentials.getProperty("username"),
-				credentials.getProperty("password"));
+				BusSimulator.cloudantCredentials.getProperty("url"),
+				BusSimulator.cloudantCredentials.getProperty("username"),
+				BusSimulator.cloudantCredentials.getProperty("password"));
 
 		db = client.database("bus_routes", false);
 	}
@@ -68,24 +66,5 @@ public class DataLayer {
 		return busRoute;
 	}
 
-	private Properties loadVCapCredentials(){
-		JsonObject jsonObj = Util.credentialsFromVCap("cloudantNoSQLDB");
-		if(jsonObj == null) return null;
-		Properties properties = new Properties();
-		properties.setProperty("username", jsonObj.get("username").getAsString());
-		properties.setProperty("password", jsonObj.get("password").getAsString());
-		properties.setProperty("url", jsonObj.get("url").getAsString());
-		return properties;
-	}
 
-	private Properties loadProperties(){
-		Properties properties = new Properties();
-		InputStream inputStream = getClass().getClassLoader().getResourceAsStream("cloudant.properties");
-		try {
-			properties.load(inputStream);
-		} catch (IOException e) {
-			e.printStackTrace();
-		}
-		return properties;
-	}
 }

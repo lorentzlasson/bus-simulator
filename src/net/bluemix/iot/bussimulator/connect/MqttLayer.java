@@ -1,9 +1,5 @@
 package net.bluemix.iot.bussimulator.connect;
 
-import java.io.IOException;
-import java.io.InputStream;
-import java.util.Properties;
-
 import net.bluemix.iot.bussimulator.BusSimulator;
 import net.bluemix.iot.bussimulator.model.Bus;
 import net.bluemix.iot.bussimulator.util.Util;
@@ -17,7 +13,6 @@ import org.eclipse.paho.client.mqttv3.MqttMessage;
 import org.eclipse.paho.client.mqttv3.persist.MemoryPersistence;
 
 import com.google.gson.Gson;
-import com.google.gson.JsonObject;
 
 public class MqttLayer implements MqttCallback {
 	
@@ -25,18 +20,14 @@ public class MqttLayer implements MqttCallback {
 	private static final String allCmdTopic		=	"iot-2/type/+/id/+/cmd/+/fmt/json";
 	private static final String allEvtTopic		=	"iot-2/type/+/id/+/evt/+/fmt/json";
 	
-	private Properties credentials;
 	private MqttClient client;
 	private BusSimulator busManager;
 
 	public MqttLayer(BusSimulator busManager) {
-		credentials = loadVCapCredentials();
-		if (credentials == null) 
-			credentials = loadProperties();
 		
-		String org = credentials.getProperty("org");
-		String apiKey = credentials.getProperty("apiKey");
-		String apiToken = credentials.getProperty("apiToken");
+		String org = BusSimulator.iotfCredentials.getProperty("org");
+		String apiKey = BusSimulator.iotfCredentials.getProperty("apiKey");
+		String apiToken = BusSimulator.iotfCredentials.getProperty("apiToken");
 		
 		String broker = "tcp://"+org+".messaging.internetofthings.ibmcloud.com:1883";
 		String clientId = "a:"+org+":bussimulator";
@@ -98,28 +89,7 @@ public class MqttLayer implements MqttCallback {
 			e.printStackTrace();
 		}
 	}
-	
-	private Properties loadProperties(){
-		Properties properties = new Properties();
-		InputStream inputStream = getClass().getClassLoader().getResourceAsStream("iot.properties");
-		try {
-			properties.load(inputStream);
-		} catch (IOException e) {
-			e.printStackTrace();
-		}
-		return properties;
-	}
-	
-	private Properties loadVCapCredentials(){
-		JsonObject jsonObj = Util.credentialsFromVCap("iotf-service");
-		if(jsonObj == null) return null;
-		Properties properties = new Properties();
-		properties.setProperty("org", jsonObj.get("org").getAsString());
-		properties.setProperty("apiKey", jsonObj.get("apiKey").getAsString());
-		properties.setProperty("apiToken", jsonObj.get("apiToken").getAsString());
-		return properties;
-	}
-	
+		
 	public void connectionLost(Throwable arg0) {}
 	public void deliveryComplete(IMqttDeliveryToken arg0) {}
 }
