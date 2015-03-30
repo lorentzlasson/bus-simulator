@@ -2,6 +2,7 @@ package net.bluemix.iot.bussimulator.connect;
 
 import java.util.List;
 
+import net.bluemix.iot.bussimulator.BusSimulator;
 import net.bluemix.iot.bussimulator.util.Util;
 
 import com.google.gson.JsonArray;
@@ -27,9 +28,13 @@ public class RestLayer {
 			String id = String.format("bus%s-%d", number, index);
 			body.addProperty("id", id);
 			try {
+				String org = BusSimulator.iotfCredentials.getProperty("org");
+				String apiKey = BusSimulator.iotfCredentials.getProperty("apiKey");
+				String apiToken = BusSimulator.iotfCredentials.getProperty("apiToken");
+				
 				response = Unirest.post(url)
-						.basicAuth("a-qchp0k-xgoi5y6hc3", "B@Plla(m9QX7ocN-Qg")
-						.routeParam("org_id", "qchp0k")
+						.basicAuth(apiKey, apiToken)
+						.routeParam("org_id", org)
 						.header("content-type", "application/json")
 						.body(body.toString())
 						.asJson();
@@ -51,23 +56,38 @@ public class RestLayer {
 		return null;
 	}
 	
-	private int getNextBusIndex(String number){
-		String url = DEVICES_API+"/{org_id}/devices/{device_type}";
-		HttpResponse<JsonNode> response = null;
-		try {
-			response = Unirest.get(url)
-					.basicAuth("a-qchp0k-xgoi5y6hc3", "B@Plla(m9QX7ocN-Qg")
-					.routeParam("org_id", "qchp0k")
-					.routeParam("device_type", "ibmbus")
-					.asJson();
+	public boolean clearRegisterBuses() {
+		JsonArray jsonArray = getRegisteredBuses();
+		for (int i = 0; i < jsonArray.size(); i++) {
+			JsonObject jsonObject = jsonArray.get(i).getAsJsonObject();
+			String deviceId = jsonObject.get("id").getAsString();
+			String url = DEVICES_API+"/{org_id}/devices/{device_type}/{device_id}";
+			HttpResponse<JsonNode> response = null;
+			try {
+				String org = BusSimulator.iotfCredentials.getProperty("org");
+				String apiKey = BusSimulator.iotfCredentials.getProperty("apiKey");
+				String apiToken = BusSimulator.iotfCredentials.getProperty("apiToken");
+				
+				response = Unirest.delete(url)
+						.basicAuth(apiKey, apiToken)
+						.routeParam("org_id", org)
+						.routeParam("device_type", "ibmbus")
+						.routeParam("device_id", deviceId)
+						.asJson();
+				
+			} catch (UnirestException e) {
+				e.printStackTrace();
+			}
 			
-		} catch (UnirestException e) {
-			e.printStackTrace();
+			int status = response.getStatus();
+			if (status != 204) return false;
+			
 		}
-		
-		JsonArray jsonArray = new JsonParser().parse(response.getBody().toString())
-		.getAsJsonArray();
-		
+		return true;
+	}
+	
+	private int getNextBusIndex(String number){
+		JsonArray jsonArray = getRegisteredBuses();
 		int limit = 100;
 		List<Integer> freeIndexes = Util.indexList(limit);
 		
@@ -81,4 +101,28 @@ public class RestLayer {
 		}
 		return freeIndexes.get(0);
 	}
+	
+	public JsonArray getRegisteredBuses(){
+		String url = DEVICES_API+"/{org_id}/devices/{device_type}";
+		HttpResponse<JsonNode> response = null;
+		try {
+			String org = BusSimulator.iotfCredentials.getProperty("org");
+			String apiKey = BusSimulator.iotfCredentials.getProperty("apiKey");
+			String apiToken = BusSimulator.iotfCredentials.getProperty("apiToken");
+			
+			response = Unirest.get(url)
+					.basicAuth(apiKey, apiToken)
+					.routeParam("org_id", org)
+					.routeParam("device_type", "ibmbus")
+					.asJson();
+			
+		} catch (UnirestException e) {
+			e.printStackTrace();
+		}
+		
+		JsonArray jsonArray = new JsonParser().parse(response.getBody().toString())
+				.getAsJsonArray();
+		return jsonArray;
+	}
+	
 }
