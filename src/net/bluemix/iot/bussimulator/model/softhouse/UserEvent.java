@@ -4,6 +4,7 @@ import net.bluemix.iot.bussimulator.model.Bus;
 
 public class UserEvent extends EventMessage {
 
+	public static final String START = "start", END = "end";
 	private String trip;
 	
 	public UserEvent(Bus bus) {
