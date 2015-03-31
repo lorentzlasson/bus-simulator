@@ -65,6 +65,10 @@ public class Bus {
 		return busRoute.location(routeLocation);
 	}
 	
+	public String getNumber(){
+		return busRoute.getNumber();
+	}
+	
 	public String getId() {
 		return id;
 	}
