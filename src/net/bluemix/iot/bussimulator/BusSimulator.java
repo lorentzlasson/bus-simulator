@@ -9,6 +9,7 @@ import java.util.concurrent.CopyOnWriteArrayList;
 
 import net.bluemix.iot.bussimulator.connection.MqttLayer;
 import net.bluemix.iot.bussimulator.connection.RestLayer;
+import net.bluemix.iot.bussimulator.controller.UserController;
 import net.bluemix.iot.bussimulator.data.DataLayer;
 import net.bluemix.iot.bussimulator.exception.BusSimulatorException;
 import net.bluemix.iot.bussimulator.model.Bus;
@@ -76,9 +77,10 @@ public class BusSimulator{
 	}
 
 	public void startBuses() {
+		UserController userController = new UserController("1", "2", "3");
 		while (true) {
 			moveBuses();			
-//			publishBusPositions();
+			publishBusPositions();
 			
 			long now = System.currentTimeMillis();
 			if (now - lastSensorEvent > INTERVAL_SENSOR) {
@@ -86,7 +88,7 @@ public class BusSimulator{
 				lastSensorEvent = now;
 			}
 			if (now - lastUserEvent > INTERVAL_USER) {
-				publishBusUsers();
+				publishBusUsers(userController);
 				lastUserEvent = now;
 			}
 			
@@ -110,14 +112,9 @@ public class BusSimulator{
 		}
 	}
 	
-	private void publishBusUsers(){
-		Random random = new Random();
-		for (Bus bus : buses) {
-			UserEvent event = new UserEvent(bus);
-			int id = 1 + random.nextInt(3);
-			event.setId(String.valueOf(id));
-			if (random.nextBoolean()) event.setTrip("start");
-			else event.setTrip("end");
+	private void publishBusUsers(UserController userController){
+		List<UserEvent> userEvents = userController.busStop(buses);
+		for (UserEvent event : userEvents) {
 			mqtt.publishUser(event);
 		}
 	}
