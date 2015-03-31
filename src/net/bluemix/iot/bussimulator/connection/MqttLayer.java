@@ -17,12 +17,10 @@ import org.eclipse.paho.client.mqttv3.persist.MemoryPersistence;
 import com.google.gson.Gson;
 
 public class MqttLayer implements MqttCallback {
-		
-	private static final String pubTopicUser	=	"iot-2/type/ibmbus/id/%s/evt/user/fmt/json";
-	private static final String pubTopicSensor	=	"iot-2/type/ibmbus/id/%s/evt/sensor/fmt/json";
-	private static final String pubTopic		=	"iot-2/type/ibmbus/id/%s/evt/position/fmt/json";
+	
+	
+	private static final String pubTopic		=	"iot-2/type/%s/id/%s/evt/%s/fmt/json";
 	private static final String allCmdTopic		=	"iot-2/type/+/id/+/cmd/+/fmt/json";
-//	private static final String allEvtTopic		=	"iot-2/type/+/id/+/evt/+/fmt/json";
 	
 	private MqttClient client;
 	private BusSimulator busManager;
@@ -75,7 +73,7 @@ public class MqttLayer implements MqttCallback {
 		String jsonMessage = new Gson().toJson(bus.getLocation());
 		MqttMessage message = new MqttMessage(Util.toDeviceFormat(jsonMessage).getBytes());
 		message.setQos(0);
-		String topic = String.format(pubTopic, bus.getId());
+		String topic = String.format(pubTopic, BusSimulator.TYPE_ID, bus.getId(), "position");
 		
 		try {
 			client.publish(topic, message);
@@ -88,7 +86,7 @@ public class MqttLayer implements MqttCallback {
 		String jsonMessage = new Gson().toJson(event);
 		MqttMessage message = new MqttMessage(Util.toDeviceFormat(jsonMessage).getBytes());
 		message.setQos(0);
-		String topic = String.format(pubTopicUser, event.getVehicleId());
+		String topic = String.format(pubTopic, BusSimulator.TYPE_ID, event.getVehicleId(), "user");
 		
 		try {
 			client.publish(topic, message);
@@ -101,7 +99,7 @@ public class MqttLayer implements MqttCallback {
 		String jsonMessage = new Gson().toJson(event);
 		MqttMessage message = new MqttMessage(Util.toDeviceFormat(jsonMessage).getBytes());
 		message.setQos(0);
-		String topic = String.format(pubTopicSensor, event.getVehicleId());
+		String topic = String.format(pubTopic, BusSimulator.TYPE_ID, event.getVehicleId(), "sensor");
 		
 		try {
 			client.publish(topic, message);

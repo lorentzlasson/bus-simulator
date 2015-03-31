@@ -29,6 +29,7 @@ public class BusSimulator{
 	private long lastUserEvent					= 0;
 	private long lastSensorEvent				= 0;
 	
+	public static final String TYPE_ID 			= "vehicle";
 	public static Properties iotfCredentials;
 	public static Properties cloudantCredentials;
 

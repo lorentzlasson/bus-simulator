@@ -24,7 +24,7 @@ public class RestLayer {
 			HttpResponse<JsonNode> response = null;
 			
 			JsonObject body = new JsonObject();
-			body.addProperty("type", "ibmbus");
+			body.addProperty("type", BusSimulator.TYPE_ID);
 			String id = String.format("bus%s-%d", number, index);
 			body.addProperty("id", id);
 			try {
@@ -71,7 +71,7 @@ public class RestLayer {
 				response = Unirest.delete(url)
 						.basicAuth(apiKey, apiToken)
 						.routeParam("org_id", org)
-						.routeParam("device_type", "ibmbus")
+						.routeParam("device_type", BusSimulator.TYPE_ID)
 						.routeParam("device_id", deviceId)
 						.asJson();
 				
@@ -113,7 +113,7 @@ public class RestLayer {
 			response = Unirest.get(url)
 					.basicAuth(apiKey, apiToken)
 					.routeParam("org_id", org)
-					.routeParam("device_type", "ibmbus")
+					.routeParam("device_type", BusSimulator.TYPE_ID)
 					.asJson();
 			
 		} catch (UnirestException e) {
