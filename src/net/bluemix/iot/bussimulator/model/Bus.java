@@ -83,27 +83,4 @@ public class Bus {
 		String representaton = String.format("[%s:%s]: (%f,%f)", busRoute.getNumber(), id, location.getLatitude(), location.getLongitude());
 		return representaton;
 	}
-	
-	public Bus.BusMinified getBusMinified() {
-		return new BusMinified(this);
-	}
-
-	@SuppressWarnings("unused")
-	public class BusMinified {
-		
-		private String id, routeNumber;
-		private double latitude, longitude;
-		
-		public BusMinified(Bus bus) {
-			this.id = bus.id;
-			this.routeNumber = bus.busRoute.getNumber();
-			Coordinate coord = bus.getLocation();
-			this.latitude = coord.getLatitude();
-			this.longitude = coord.getLongitude();
-		}
-		
-		public String getId(){
-			return id;
-		}
-	}
 }
