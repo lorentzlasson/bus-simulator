@@ -124,5 +124,4 @@ public class RestLayer {
 				.getAsJsonArray();
 		return jsonArray;
 	}
-	
 }
