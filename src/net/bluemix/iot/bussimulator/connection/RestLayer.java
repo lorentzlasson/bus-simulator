@@ -1,4 +1,4 @@
-package net.bluemix.iot.bussimulator.connect;
+package net.bluemix.iot.bussimulator.connection;
 
 import java.util.List;
 
