@@ -110,6 +110,7 @@ public class MqttLayer implements MqttCallback {
 		}
 	}
 	
+	// TODO testing
 	public void addNewBus() {
 		String jsonBus = "{\"number\": \"3\"}";
 		MqttMessage message = new MqttMessage(Util.toDeviceFormat(jsonBus).getBytes());
