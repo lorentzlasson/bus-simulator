@@ -1,6 +1,5 @@
 package net.bluemix.iot.bussimulator.data;
 
-import java.security.InvalidParameterException;
 import java.util.List;
 
 import net.bluemix.iot.bussimulator.BusSimulator;
