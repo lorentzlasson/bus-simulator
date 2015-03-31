@@ -5,8 +5,12 @@ import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.lang.reflect.Array;
 import java.security.InvalidParameterException;
+import java.text.DateFormat;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
+import java.util.TimeZone;
 
 import net.bluemix.iot.bussimulator.Main;
 import net.bluemix.iot.bussimulator.model.Coordinate;
@@ -83,5 +87,13 @@ public class Util {
 			list.add(i);
 		}
 		return list;
+	}
+	
+	public static String getNowAsISO8601(){
+		TimeZone tz = TimeZone.getTimeZone("UTC");
+	    DateFormat df = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss");
+	    df.setTimeZone(tz);
+	    String nowAsISO = df.format(new Date());
+	    return nowAsISO;
 	}
 }
