@@ -24,10 +24,12 @@ import com.google.gson.JsonObject;
 public class BusSimulator{
 
 	private static final long INTERVAL_POSITION = 1000;	// 1  sec
-	private static final long INTERVAL_USER		= 30000;// 30 sec
 	private static final long INTERVAL_SENSOR	= 10000;// 10 sec
+	private static final long INTERVAL_USER		= 30000;// 30 sec
+	private static final long INTERVAL_HEARTBEAT= 60000;// 60 sec
 	private long lastUserEvent					= 0;
 	private long lastSensorEvent				= 0;
+	private long lastHeartbeatEvent				= 0;
 	
 	public static final String TYPE_ID 			= "vehicle";
 	public static Properties iotfCredentials;
@@ -95,6 +97,10 @@ public class BusSimulator{
 				publishBusUsers(userController);
 				lastUserEvent = now;
 			}
+			if (now - lastHeartbeatEvent > INTERVAL_HEARTBEAT) {
+				publishBusHeartbeats();
+				lastHeartbeatEvent = now;
+			}
 			
 			try {
 				Thread.sleep(INTERVAL_POSITION);
@@ -103,6 +109,7 @@ public class BusSimulator{
 			}
 		}
 	}
+
 
 	private void moveBuses(){
 		for (Bus bus : buses) {
@@ -134,6 +141,12 @@ public class BusSimulator{
 		}
 	}
 
+	private void publishBusHeartbeats() {
+		for (Bus bus : buses) {
+			mqtt.publishActive(bus);
+		}
+	}
+	
 	private void loadCredentials() {
 		String vCap = System.getenv("VCAP_SERVICES");
 		if (vCap != null) {

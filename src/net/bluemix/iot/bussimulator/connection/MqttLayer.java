@@ -15,6 +15,7 @@ import org.eclipse.paho.client.mqttv3.MqttMessage;
 import org.eclipse.paho.client.mqttv3.persist.MemoryPersistence;
 
 import com.google.gson.Gson;
+import com.google.gson.JsonObject;
 
 public class MqttLayer implements MqttCallback {
 	
@@ -101,6 +102,23 @@ public class MqttLayer implements MqttCallback {
 		MqttMessage message = new MqttMessage(Util.toDeviceFormat(jsonMessage).getBytes());
 		message.setQos(0);
 		String topic = String.format(pubTopic, BusSimulator.TYPE_ID, event.getVehicleId(), "sensor");
+		
+		try {
+			client.publish(topic, message);
+		} catch (MqttException e) {
+			e.printStackTrace();
+		}
+	}
+	
+	public void publishActive(Bus bus) {
+		JsonObject jsonObject = new JsonObject();
+		jsonObject.addProperty("vehicleId", bus.getId());
+		jsonObject.addProperty("status", "1");
+		
+		String jsonMessage = jsonObject.getAsString();
+		MqttMessage message = new MqttMessage(Util.toDeviceFormat(jsonMessage).getBytes());
+		message.setQos(0);
+		String topic = String.format(pubTopic, BusSimulator.TYPE_ID, bus.getId(), "status");
 		
 		try {
 			client.publish(topic, message);
