@@ -21,6 +21,7 @@ public class DataLayer {
 				BusSimulator.cloudantCredentials.getProperty("password"));
 
 		db = client.database("bus_routes", false);
+		System.out.println("Connected to Cloudant");
 	}
 
 	public void saveRoute(BusRoute busRoute){

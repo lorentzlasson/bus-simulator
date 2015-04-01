@@ -41,6 +41,7 @@ public class MqttLayer implements MqttCallback {
 			options.setUserName(apiKey);
 			options.setPassword(apiToken.toCharArray());
 			client.connect(options);
+			System.out.println("Connected to "+broker);
 			client.setCallback(this);
 			client.subscribe(allCmdTopic);
 //			client.subscribe(allEvtTopic);

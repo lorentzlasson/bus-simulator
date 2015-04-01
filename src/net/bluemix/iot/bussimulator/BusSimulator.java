@@ -65,6 +65,7 @@ public class BusSimulator{
 	}
 
 	public void addBus(String number) {
+		System.out.println("New bus added: " + number);
 		String id = restLayer.registerNewBus(number);
 		
 		BusRoute busRoute;
@@ -78,6 +79,7 @@ public class BusSimulator{
 	}
 
 	public void startBuses() {
+		System.out.println("Starting busses");
 		String[] userIds = restLayer.getUserIds();
 		UserController userController = new UserController(userIds);
 		while (true) {
