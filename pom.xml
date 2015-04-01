@@ -39,7 +39,7 @@
 					</descriptorRefs>
 					<archive>
 						<manifest>
-							<mainClass>net.bluemix.iot.bussimulator.Main</mainClass>
+							<mainClass>net.bluemix.iot.bussimulator.BusSimulator</mainClass>
 						</manifest>
 					</archive>
 				</configuration>
