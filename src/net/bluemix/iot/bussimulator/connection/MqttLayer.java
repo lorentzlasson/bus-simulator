@@ -109,19 +109,6 @@ public class MqttLayer implements MqttCallback {
 		}
 	}
 	
-	// TODO testing
-	public void addNewBus() {
-		String jsonBus = "{\"number\": \"3\"}";
-		MqttMessage message = new MqttMessage(Util.toDeviceFormat(jsonBus).getBytes());
-		message.setQos(0);
-		
-		try {
-			client.publish("iot-2/type/client/id/tracker/cmd/new_bus/fmt/json", message);
-		} catch (MqttException e) {
-			e.printStackTrace();
-		}
-	}
-	
 	public void connectionLost(Throwable throwable) {
 		throwable.printStackTrace();
 		System.exit(0);
