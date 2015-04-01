@@ -1,19 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <classpath>
-	<classpathentry kind="src" path="src"/>
-	<classpathentry kind="src" path="res"/>
 	<classpathentry kind="con" path="org.eclipse.jdt.launching.JRE_CONTAINER/org.eclipse.jdt.internal.launching.macosx.MacOSXType/Java SE 7 [1.7.0_71]"/>
-	<classpathentry kind="lib" path="libs/cloudant-client-1.0.1.jar"/>
-	<classpathentry kind="lib" path="libs/commons-codec-1.10.jar"/>
-	<classpathentry kind="lib" path="libs/commons-logging-1.2.jar"/>
-	<classpathentry kind="lib" path="libs/gson-2.3.1.jar"/>
-	<classpathentry kind="lib" path="libs/httpclient-4.4.jar"/>
-	<classpathentry kind="lib" path="libs/httpcore-4.4.jar"/>
-	<classpathentry kind="lib" path="libs/mqtt-client-0.4.1-20140526.040116-93.jar"/>
-	<classpathentry kind="lib" path="libs/commons-io-2.4.jar"/>
-	<classpathentry kind="lib" path="libs/httpasyncclient-4.1-beta1.jar"/>
-	<classpathentry kind="lib" path="libs/unirest-java-1.4.5.jar"/>
-	<classpathentry kind="lib" path="libs/httpcore-nio-4.4-beta1.jar"/>
-	<classpathentry kind="lib" path="libs/json-20080701.jar"/>
+	<classpathentry exported="true" kind="con" path="org.springsource.ide.eclipse.gradle.classpathcontainer"/>
 	<classpathentry kind="output" path="bin"/>
 </classpath>
