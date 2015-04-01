@@ -16,6 +16,7 @@ import com.mashape.unirest.http.exceptions.UnirestException;
 public class RestLayer {
 
 	private static final String DEVICES_API = "https://internetofthings.ibmcloud.com/api/v0001/organizations";
+	private static final String SOFTHOUSE_API = "http://mvdapiwar.eu-gb.mybluemix.net";
 		
 	public String registerNewBus(String number){
 		int index = getNextBusIndex(number);
@@ -123,5 +124,27 @@ public class RestLayer {
 		JsonArray jsonArray = new JsonParser().parse(response.getBody().toString())
 				.getAsJsonArray();
 		return jsonArray;
+	}
+	
+	public String[] getUserIds(){
+		String url = SOFTHOUSE_API+"/user/allUsers";
+		HttpResponse<JsonNode> response = null;
+		try {
+			response = Unirest.get(url).asJson();
+		} catch (UnirestException e) {
+			e.printStackTrace();
+		}
+		
+		JsonArray jsonArray = new JsonParser().parse(response.getBody().toString())
+				.getAsJsonArray();
+		
+		String[] userIds = new String[jsonArray.size()];
+		for (int i = 0; i < jsonArray.size(); i++) {
+			userIds[i] = jsonArray.get(i)
+							.getAsJsonObject()
+							.get("userId")
+							.getAsString();
+		}
+		return userIds;
 	}
 }

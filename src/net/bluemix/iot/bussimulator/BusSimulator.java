@@ -78,7 +78,8 @@ public class BusSimulator{
 	}
 
 	public void startBuses() {
-		UserController userController = new UserController("1", "2", "3");
+		String[] userIds = restLayer.getUserIds();
+		UserController userController = new UserController(userIds);
 		while (true) {
 			moveBuses();			
 			publishBusPositions();
