@@ -23,6 +23,7 @@ import com.google.gson.JsonObject;
 
 public class BusSimulator{
 
+	private static final long INTERVAL_THROTTLE = 1000;	// 1  sec
 	private static final long INTERVAL_POSITION = 1000;	// 1  sec
 	private static final long INTERVAL_SENSOR	= 10000;// 10 sec
 	private static final long INTERVAL_USER		= 30000;// 30 sec
@@ -85,31 +86,20 @@ public class BusSimulator{
 		String[] userIds = restLayer.getUserIds();
 		UserController userController = new UserController(userIds);
 		while (true) {
-			moveBuses();			
-			publishBusPositions();
-			
 			long now = System.currentTimeMillis();
-			if (now - lastSensorEvent > INTERVAL_SENSOR) {
-				publishBusSensors();
-				lastSensorEvent = now;
-			}
-			if (now - lastUserEvent > INTERVAL_USER) {
-				publishBusUsers(userController);
-				lastUserEvent = now;
-			}
-			if (now - lastHeartbeatEvent > INTERVAL_HEARTBEAT) {
-				publishBusHeartbeats();
-				lastHeartbeatEvent = now;
-			}
+			moveBuses();			
+			publishBusPositions(now);
+			publishBusSensors(now);
+			publishBusUsers(now, userController);
+			publishBusHeartbeats(now);
 			
 			try {
-				Thread.sleep(INTERVAL_POSITION);
+				Thread.sleep(INTERVAL_THROTTLE);
 			} catch (InterruptedException e) {
 				e.printStackTrace();
 			}
 		}
 	}
-
 
 	private void moveBuses(){
 		for (Bus bus : buses) {
@@ -117,33 +107,44 @@ public class BusSimulator{
 		}
 	}
 
-	private void publishBusPositions(){
-		for (Bus bus : buses) {
-			mqtt.publishPosition(bus);
+	private void publishBusPositions(long now){
+		if (now - lastUserEvent > INTERVAL_POSITION) {
+			for (Bus bus : buses) {
+				mqtt.publishPosition(bus);
+			}
 		}
 	}
 	
-	private void publishBusUsers(UserController userController){
-		List<UserEvent> userEvents = userController.busStop(buses);
-		for (UserEvent event : userEvents) {
-			mqtt.publishUser(event);
+	private void publishBusUsers(long now, UserController userController){
+		if (now - lastUserEvent > INTERVAL_USER) {
+			List<UserEvent> userEvents = userController.busStop(buses);
+			for (UserEvent event : userEvents) {
+				mqtt.publishUser(event);
+			}
+			lastUserEvent = now;
 		}
 	}
 	
-	private void publishBusSensors(){
-		Random random = new Random();
-		for (Bus bus : buses) {
-			SensorEvent event = new SensorEvent(bus);
-			event.setId("5");
-			double temprature = 20 + random.nextDouble() * 5;
-			event.setValue(String.format("%.2f", temprature));
-			mqtt.publishSensor(event);
+	private void publishBusSensors(long now){
+		if (now - lastSensorEvent > INTERVAL_SENSOR) {
+			Random random = new Random();
+			for (Bus bus : buses) {
+				SensorEvent event = new SensorEvent(bus);
+				event.setId("5");
+				double temprature = 20 + random.nextDouble() * 5;
+				event.setValue(String.format("%.2f", temprature));
+				mqtt.publishSensor(event);
+			}
+			lastSensorEvent = now;
 		}
 	}
 
-	private void publishBusHeartbeats() {
-		for (Bus bus : buses) {
-			mqtt.publishActive(bus);
+	private void publishBusHeartbeats(long now) {
+		if (now - lastHeartbeatEvent > INTERVAL_HEARTBEAT) {
+			for (Bus bus : buses) {
+				mqtt.publishActive(bus);
+			}
+			lastHeartbeatEvent = now;
 		}
 	}
 	
