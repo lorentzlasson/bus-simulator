@@ -115,7 +115,7 @@ public class MqttLayer implements MqttCallback {
 		jsonObject.addProperty("vehicleId", bus.getId());
 		jsonObject.addProperty("status", "1");
 		
-		String jsonMessage = jsonObject.getAsString();
+		String jsonMessage = jsonObject.toString();
 		MqttMessage message = new MqttMessage(Util.toDeviceFormat(jsonMessage).getBytes());
 		message.setQos(0);
 		String topic = String.format(pubTopic, BusSimulator.TYPE_ID, bus.getId(), "status");
