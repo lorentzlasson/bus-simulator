@@ -120,7 +120,11 @@ public class MqttLayer implements MqttCallback {
 			e.printStackTrace();
 		}
 	}
-		
-	public void connectionLost(Throwable arg0) {}
+	
+	public void connectionLost(Throwable throwable) {
+		throwable.printStackTrace();
+		System.exit(0);
+	}
+	
 	public void deliveryComplete(IMqttDeliveryToken arg0) {}
 }
