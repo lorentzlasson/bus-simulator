@@ -12,7 +12,7 @@ import java.util.Date;
 import java.util.List;
 import java.util.TimeZone;
 
-import net.bluemix.iot.bussimulator.Main;
+import net.bluemix.iot.bussimulator.BusSimulator;
 import net.bluemix.iot.bussimulator.model.Coordinate;
 
 import com.google.gson.JsonObject;
@@ -56,7 +56,7 @@ public class Util {
 		String line = "";
 		String cvsSplitBy = ",";		
 		List<Coordinate> coordinateList = new ArrayList<Coordinate>();
-		InputStream is = Main.class.getResourceAsStream(path);
+		InputStream is = BusSimulator.class.getResourceAsStream(path);
 		InputStreamReader isr = new InputStreamReader(is);
 		try {
 			br = new BufferedReader(isr);

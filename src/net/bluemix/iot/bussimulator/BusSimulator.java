@@ -49,6 +49,7 @@ public class BusSimulator{
 		this.mqtt = new MqttLayer(this);
 		this.dataLayer = new DataLayer();
 		initializeBuses();
+		startBuses();
 	}
 
 	private void initializeBuses() {
@@ -81,7 +82,7 @@ public class BusSimulator{
 		}
 	}
 
-	public void startBuses() {
+	private void startBuses() {
 		System.out.println("Starting busses");
 		String[] userIds = restLayer.getUserIds();
 		UserController userController = new UserController(userIds);
@@ -178,5 +179,9 @@ public class BusSimulator{
 			e.printStackTrace();
 		}
 		return properties;
+	}
+	
+	public static void main(String[] args) {
+		new BusSimulator();
 	}
 }
