@@ -90,7 +90,7 @@ public class Util {
 	}
 	
 	public static String getNowAsISO8601(){
-		TimeZone tz = TimeZone.getTimeZone("UTC");
+		TimeZone tz = TimeZone.getTimeZone("GMT+2:00");
 	    DateFormat df = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss");
 	    df.setTimeZone(tz);
 	    String nowAsISO = df.format(new Date());
