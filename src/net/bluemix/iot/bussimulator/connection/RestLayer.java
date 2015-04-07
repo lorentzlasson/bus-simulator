@@ -58,10 +58,9 @@ public class RestLayer {
 	}
 	
 	public boolean clearRegisterBuses() {
-		JsonArray jsonArray = getRegisteredBuses();
-		for (int i = 0; i < jsonArray.size(); i++) {
-			JsonObject jsonObject = jsonArray.get(i).getAsJsonObject();
-			String deviceId = jsonObject.get("id").getAsString();
+		String[] busIds = getRegisteredBuses();
+		for (int i = 0; i < busIds.length; i++) {
+			String deviceId = busIds[i];
 			String url = DEVICES_API+"/{org_id}/devices/{device_type}/{device_id}";
 			HttpResponse<JsonNode> response = null;
 			try {
@@ -88,13 +87,11 @@ public class RestLayer {
 	}
 	
 	private int getNextBusIndex(String number){
-		JsonArray jsonArray = getRegisteredBuses();
+		String[] buses = getRegisteredBuses();
 		int limit = 100;
 		List<Integer> freeIndexes = Util.indexList(limit);
-		
-		for (int i = 0; i < jsonArray.size(); i++) {
-			JsonObject jsonObject = jsonArray.get(i).getAsJsonObject();
-			String id = jsonObject.get("id").getAsString();
+
+		for (String id : buses) {
 			if (id.contains("bus"+number)) {
 				int index = Integer.parseInt(id.split("-")[1]);
 				freeIndexes.remove(new Integer(index));
@@ -103,7 +100,7 @@ public class RestLayer {
 		return freeIndexes.get(0);
 	}
 	
-	public JsonArray getRegisteredBuses(){
+	public String[] getRegisteredBuses(){
 		String url = DEVICES_API+"/{org_id}/devices/{device_type}";
 		HttpResponse<JsonNode> response = null;
 		try {
@@ -123,7 +120,8 @@ public class RestLayer {
 		
 		JsonArray jsonArray = new JsonParser().parse(response.getBody().toString())
 				.getAsJsonArray();
-		return jsonArray;
+
+		return jsonArrayToStringArray(jsonArray, "id");
 	}
 	
 	public String[] getUserIds(){
@@ -138,13 +136,17 @@ public class RestLayer {
 		JsonArray jsonArray = new JsonParser().parse(response.getBody().toString())
 				.getAsJsonArray();
 		
-		String[] userIds = new String[jsonArray.size()];
+		return jsonArrayToStringArray(jsonArray, "userId");
+	}
+	
+	private String[] jsonArrayToStringArray(JsonArray jsonArray, String attr){
+		String[] array = new String[jsonArray.size()];
 		for (int i = 0; i < jsonArray.size(); i++) {
-			userIds[i] = jsonArray.get(i)
-							.getAsJsonObject()
-							.get("userId")
-							.getAsString();
+			array[i] = jsonArray.get(i)
+					.getAsJsonObject()
+					.get(attr)
+					.getAsString();
 		}
-		return userIds;
+		return array;
 	}
 }

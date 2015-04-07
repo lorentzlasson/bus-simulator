@@ -19,7 +19,6 @@ import net.bluemix.iot.bussimulator.model.event.SensorEvent;
 import net.bluemix.iot.bussimulator.model.event.UserEvent;
 import net.bluemix.iot.bussimulator.util.Util;
 
-import com.google.gson.JsonArray;
 import com.google.gson.JsonObject;
 
 public class BusSimulator{
@@ -59,12 +58,9 @@ public class BusSimulator{
 	}
 
 	private void initializeBuses() {
-		JsonArray registeredBuses = restLayer.getRegisteredBuses();
-		for (int i = 0; i < registeredBuses.size(); i++) {
-			JsonObject jsonBus = registeredBuses.get(i).getAsJsonObject();
-			String id = jsonBus.get("id").getAsString();
+		String[] busIds = restLayer.getRegisteredBuses();
+		for (String id : busIds) {
 			String number = id.split("bus")[1].split("-")[0]; // between "bus" and "-"
-
 			try {
 				BusRoute busRoute = dataLayer.getRoute(number);
 				buses.add(new Bus(id, busRoute));
