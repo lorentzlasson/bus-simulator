@@ -45,7 +45,6 @@ public class BusSimulator{
 		loadCredentials();
 		buses = new CopyOnWriteArrayList<Bus>();
 		this.restLayer = new RestLayer();
-//		restLayer.clearRegisterBuses();
 		this.mqtt = new MqttLayer(this);
 		this.dataLayer = new DataLayer();
 		initializeBuses();
