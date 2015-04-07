@@ -28,7 +28,7 @@ public class Bus {
 		this.routeLocation = routeLocation;
 	}
 	
-	public void move(){
+	public void tick(){
 		boolean atLastStation = routeLocation == busRoute.length() - 1;
 		boolean atFirstStation = routeLocation == 0;
 		boolean outOfBoundsBackward = atFirstStation && direction == Direction.BACKWARD;

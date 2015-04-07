@@ -87,7 +87,7 @@ public class BusSimulator{
 		UserController userController = new UserController(userIds);
 		while (true) {
 			long now = System.currentTimeMillis();
-			moveBuses();			
+			tickBuses();			
 			publishBusPositions(now);
 			publishBusSensors(now);
 			publishBusUsers(now, userController);
@@ -101,9 +101,9 @@ public class BusSimulator{
 		}
 	}
 
-	private void moveBuses(){
+	private void tickBuses(){
 		for (Bus bus : buses) {
-			bus.move();
+			bus.tick();
 		}
 	}
 
