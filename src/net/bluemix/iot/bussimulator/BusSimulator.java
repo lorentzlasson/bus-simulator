@@ -23,18 +23,19 @@ import com.google.gson.JsonObject;
 
 public class BusSimulator{
 
-	private static final long INTERVAL_THROTTLE 	= 1  * 1000;
+	private static final long INTERVAL_TICK		 	= 1  * 1000;
 	private static final long INTERVAL_POSITION 	= 1  * 1000;
 	private static final long INTERVAL_SENSOR		= 10 * 1000;
 	private static final long INTERVAL_HEARTBEAT	= 60 * 1000;
-	private long lastUserEvent						= 0;
-	private long lastSensorEvent					= 0;
-	private long lastHeartbeatEvent					= 0;
+	private static long lastUserEvent;
+	private static long lastSensorEvent;
+	private static long lastHeartbeatEvent;
 
 	public static final String TYPE_ID 				= "vehicle";
 	public static final int BUS_STOP_DURATION 		= 10;	// ticks
 	public static final int LEAVE_BUS_PROB	 		= 20;	// percent
 	public static final int ENTER_BUS_PROB	 		= 5;	// percent
+	public static final int STEP_DISTANCE			= 15;	// meter/tick
 
 	public static Properties iotfCredentials;
 	public static Properties cloudantCredentials;
@@ -63,6 +64,7 @@ public class BusSimulator{
 			String number = id.split("bus")[1].split("-")[0]; // between "bus" and "-"
 			try {
 				BusRoute busRoute = dataLayer.getRoute(number);
+				busRoute.enhance();
 				buses.add(new Bus(id, busRoute));
 			} catch (BusSimulatorException e) {
 				e.printStackTrace();
@@ -87,7 +89,7 @@ public class BusSimulator{
 			publishBusHeartbeats(now);
 
 			try {
-				Thread.sleep(INTERVAL_THROTTLE);
+				Thread.sleep(INTERVAL_TICK);
 			} catch (InterruptedException e) {
 				e.printStackTrace();
 			}
@@ -191,7 +193,7 @@ public class BusSimulator{
 	}
 
 	public static void publishUserEvent(UserEvent userEvent){
-		System.out.printf("User %s %s bus %s\n", userEvent.getId(), userEvent.getTrip(), userEvent.getVehicleId());
+		System.out.printf("User %s %s %s\n", userEvent.getId(), userEvent.getTrip(), userEvent.getVehicleId());
 		mqtt.publishUser(userEvent);
 	}
 
