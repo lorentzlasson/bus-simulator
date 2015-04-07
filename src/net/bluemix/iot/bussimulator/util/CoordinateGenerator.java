@@ -8,22 +8,6 @@ import net.bluemix.iot.bussimulator.model.Coordinate;
 
 public class CoordinateGenerator {
 	
-	public static void test() {
-		Coordinate c1 = new Coordinate(0,0);
-		Coordinate c2 = new Coordinate(1,0);
-		Coordinate c3 = new Coordinate(2,1);
-		double stepSize = 1000;
-		Coordinate[] coordinates = {c1,c2,c3};
-		List<Coordinate> path = createPath(coordinates, stepSize);
-		for(Coordinate c : path) {
-			System.out.println(c);
-		}
-	}
-	
-	public static void main(String[] args) {
-		test();
-	}
-	
 	public static List<Coordinate> createPath(Coordinate[] coordinates, double stepSizeMeters) {
 		List<Vector> vectors = coordinatesToVectors(coordinates);
 		double stepSizeGCS = metersToGCS(stepSizeMeters);
@@ -40,6 +24,7 @@ public class CoordinateGenerator {
 		}
 		return coordinates;
 	}
+	
 	private static List<Vector> coordinatesToVectors(Coordinate[] coordinates) {
 		List<Vector> vectors = new LinkedList<Vector>();
 		for (Coordinate coordinate : coordinates) {
