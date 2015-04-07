@@ -118,9 +118,11 @@ public class BusSimulator{
 	
 	private void publishBusUsers(long now, UserController userController){
 		if (now - lastUserEvent > INTERVAL_USER) {
-			List<UserEvent> userEvents = userController.busStop(buses);
-			for (UserEvent event : userEvents) {
-				mqtt.publishUser(event);
+			if (buses.size() > 0) {
+				List<UserEvent> userEvents = userController.busStop(buses);
+				for (UserEvent event : userEvents) {
+					mqtt.publishUser(event);
+				}
 			}
 			lastUserEvent = now;
 		}
