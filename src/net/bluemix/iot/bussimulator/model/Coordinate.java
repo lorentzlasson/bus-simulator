@@ -37,10 +37,4 @@ public class Coordinate {
 	public String toString() {
 		return String.format("[%f; %f]", latitude, longitude);
 	}
-	
-	public static double distance(Coordinate coord1, Coordinate coord2){
-		double a = coord1.getLatitude() - coord2.getLatitude();
-		double b = coord1.getLongitude() - coord2.getLongitude();
-		return Math.sqrt(Math.pow(a, 2) +Math.pow(b, 2));
-	}
 }

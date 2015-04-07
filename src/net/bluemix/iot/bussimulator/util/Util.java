@@ -75,13 +75,6 @@ public class Util {
 		return coordinates;
 	}
 	
-	public static Coordinate[] coordinatesFromCrossRoadsCsv(String path){
-		Coordinate[] checkPoints = coordinatesFromCsv(path);
-		List<Coordinate> listPath = CoordGenerator.createPathFromCheckpoints(checkPoints, 1);
-		Coordinate[] arrPath = Util.listToArray(listPath);
-		return arrPath;				
-	}
-	
 	public static List<Integer> indexList(int length){
 		List<Integer> list = new ArrayList<Integer>();
 		for (int i = 1; i <= length; i++) {
