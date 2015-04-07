@@ -1,8 +1,8 @@
-package net.bluemix.iot.bussimulator.model.softhouse;
+package net.bluemix.iot.bussimulator.model.event;
 
 import net.bluemix.iot.bussimulator.model.Bus;
 
-public class UserEvent extends EventMessage {
+public class UserEvent extends SofthouseMessage {
 
 	public static final String START = "start", END = "end";
 	private String trip;

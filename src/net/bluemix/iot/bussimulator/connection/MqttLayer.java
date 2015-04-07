@@ -2,8 +2,9 @@ package net.bluemix.iot.bussimulator.connection;
 
 import net.bluemix.iot.bussimulator.BusSimulator;
 import net.bluemix.iot.bussimulator.model.Bus;
-import net.bluemix.iot.bussimulator.model.softhouse.SensorEvent;
-import net.bluemix.iot.bussimulator.model.softhouse.UserEvent;
+import net.bluemix.iot.bussimulator.model.event.MoveEvent;
+import net.bluemix.iot.bussimulator.model.event.SensorEvent;
+import net.bluemix.iot.bussimulator.model.event.UserEvent;
 import net.bluemix.iot.bussimulator.util.Util;
 
 import org.eclipse.paho.client.mqttv3.IMqttDeliveryToken;
@@ -43,7 +44,6 @@ public class MqttLayer implements MqttCallback {
 			System.out.println("Connected to "+broker);
 			client.setCallback(this);
 			client.subscribe(allCmdTopic);
-//			client.subscribe(allEvtTopic);
 		} catch (MqttException e) {
 			e.printStackTrace();
 		}
@@ -69,11 +69,11 @@ public class MqttLayer implements MqttCallback {
 		}
 	}
 	
-	public void publishPosition(Bus bus) {
-		String jsonMessage = new Gson().toJson(bus.getLocation());
+	public void publishPosition(MoveEvent event) {
+		String jsonMessage = new Gson().toJson(event);
 		MqttMessage message = new MqttMessage(Util.toDeviceFormat(jsonMessage).getBytes());
 		message.setQos(0);
-		String topic = String.format(pubTopic, BusSimulator.TYPE_ID, bus.getId(), "position");
+		String topic = String.format(pubTopic, BusSimulator.TYPE_ID, event.getVehicleId(), "position");
 		
 		try {
 			client.publish(topic, message);

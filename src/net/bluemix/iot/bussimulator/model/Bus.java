@@ -5,7 +5,7 @@ import java.util.Random;
 import java.util.concurrent.CopyOnWriteArrayList;
 
 import net.bluemix.iot.bussimulator.BusSimulator;
-import net.bluemix.iot.bussimulator.model.softhouse.UserEvent;
+import net.bluemix.iot.bussimulator.model.event.UserEvent;
 import net.bluemix.iot.bussimulator.util.Util;
 
 public class Bus {
@@ -53,7 +53,7 @@ public class Bus {
 
 		if (getLocation().isStation()) {
 			if (stoppedTimer == BusSimulator.BUS_STOP_DURATION) {
-				System.out.printf("Stopped at station %d\n", routeLocation);
+				System.out.printf("%s stopped at %d\n", id, routeLocation);
 				openDoors();
 			}
 			if (stoppedTimer <= 0) {

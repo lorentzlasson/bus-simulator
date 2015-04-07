@@ -1,8 +1,8 @@
-package net.bluemix.iot.bussimulator.model.softhouse;
+package net.bluemix.iot.bussimulator.model.event;
 
 import net.bluemix.iot.bussimulator.model.Bus;
 
-public class SensorEvent extends EventMessage {
+public class SensorEvent extends SofthouseMessage {
 	
 	private String value;
 	

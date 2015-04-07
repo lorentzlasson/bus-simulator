@@ -14,8 +14,9 @@ import net.bluemix.iot.bussimulator.exception.BusSimulatorException;
 import net.bluemix.iot.bussimulator.model.Bus;
 import net.bluemix.iot.bussimulator.model.BusRoute;
 import net.bluemix.iot.bussimulator.model.User;
-import net.bluemix.iot.bussimulator.model.softhouse.SensorEvent;
-import net.bluemix.iot.bussimulator.model.softhouse.UserEvent;
+import net.bluemix.iot.bussimulator.model.event.MoveEvent;
+import net.bluemix.iot.bussimulator.model.event.SensorEvent;
+import net.bluemix.iot.bussimulator.model.event.UserEvent;
 import net.bluemix.iot.bussimulator.util.Util;
 
 import com.google.gson.JsonArray;
@@ -32,9 +33,9 @@ public class BusSimulator{
 	private long lastHeartbeatEvent					= 0;
 
 	public static final String TYPE_ID 				= "vehicle";
-	public static final int BUS_STOP_DURATION 		= 3; // ticks
-	public static final int LEAVE_BUS_PROB	 		= 20; // percent
-	public static final int ENTER_BUS_PROB	 		= 10; // percent
+	public static final int BUS_STOP_DURATION 		= 10;	// ticks
+	public static final int LEAVE_BUS_PROB	 		= 20;	// percent
+	public static final int ENTER_BUS_PROB	 		= 5;	// percent
 
 	public static Properties iotfCredentials;
 	public static Properties cloudantCredentials;
@@ -106,8 +107,9 @@ public class BusSimulator{
 	private void publishBusPositions(long now){
 		if (now - lastUserEvent > INTERVAL_POSITION) {
 			for (Bus bus : buses) {
-								mqtt.publishPosition(bus);
-//				System.out.println(bus.asLocation());
+				MoveEvent event = new MoveEvent(bus);
+				mqtt.publishPosition(event);
+				//				System.out.println(bus.asLocation());
 			}
 		}
 	}
@@ -120,7 +122,7 @@ public class BusSimulator{
 				event.setId("5");
 				double temprature = 20 + random.nextDouble() * 5;
 				event.setValue(String.format("%.2f", temprature));
-								mqtt.publishSensor(event);
+				mqtt.publishSensor(event);
 			}
 			lastSensorEvent = now;
 		}
@@ -129,7 +131,7 @@ public class BusSimulator{
 	private void publishBusHeartbeats(long now) {
 		if (now - lastHeartbeatEvent > INTERVAL_HEARTBEAT) {
 			for (Bus bus : buses) {
-								mqtt.publishActive(bus);
+				mqtt.publishActive(bus);
 			}
 			lastHeartbeatEvent = now;
 		}
@@ -180,7 +182,7 @@ public class BusSimulator{
 			e.printStackTrace();
 		}
 	}
-	
+
 	public static List<User> getBusLine(){
 		List<User> busLine = new CopyOnWriteArrayList<User>();
 		for (User user : users) {
@@ -191,7 +193,7 @@ public class BusSimulator{
 		}
 		return busLine;
 	}
-	
+
 	public static void publishUserEvent(UserEvent userEvent){
 		System.out.printf("User %s %s bus %s\n", userEvent.getId(), userEvent.getTrip(), userEvent.getVehicleId());
 		mqtt.publishUser(userEvent);
