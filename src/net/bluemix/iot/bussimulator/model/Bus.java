@@ -35,30 +35,16 @@ public class Bus {
 		boolean outOfBoundsForward = atLastStation && direction == Direction.FORWARD;
 		
 		// Ensure correct direction
-		if (!busRoute.isCircular()) {
-			if (outOfBoundsBackward){
-				direction = Direction.FORWARD;
-			}
-			else if (outOfBoundsForward){
-				direction = Direction.BACKWARD;
-			}
+		if (outOfBoundsBackward){
+			direction = Direction.FORWARD;
+		}
+		else if (outOfBoundsForward){
+			direction = Direction.BACKWARD;
+		}
 
-			if(direction == Direction.FORWARD) routeLocation ++;
-			else if(direction == Direction.BACKWARD) routeLocation--;	
-		}
-		else {
-			// offsets station by 1
-			if (outOfBoundsForward) {
-				routeLocation = 0;
-			}
-			else if (outOfBoundsBackward) {
-				routeLocation = busRoute.length() - 1;
-			}
-			else {
-				if(direction == Direction.FORWARD) routeLocation ++;
-				else if(direction == Direction.BACKWARD) routeLocation--;					
-			}
-		}
+		if(direction == Direction.FORWARD) routeLocation ++;
+		else if(direction == Direction.BACKWARD) routeLocation--;	
+	
 	}
 	
 	public Coordinate getLocation(){

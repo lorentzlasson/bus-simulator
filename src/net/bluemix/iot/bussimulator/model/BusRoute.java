@@ -3,12 +3,10 @@ package net.bluemix.iot.bussimulator.model;
 public class BusRoute {
 
 	private String number;
-	private boolean circular;
 	private Coordinate[] coordinates;
 	
-	public BusRoute(String number, Coordinate[] route, boolean circular) {
+	public BusRoute(String number, Coordinate[] route) {
 		this.coordinates = route;
-		this.circular = circular;
 		this.number = number;
 	}
 	
@@ -22,10 +20,6 @@ public class BusRoute {
 
 	public String getNumber() {
 		return number;
-	}
-
-	public boolean isCircular() {
-		return circular;
 	}
 
 	public Coordinate[] getCoordinates() {
