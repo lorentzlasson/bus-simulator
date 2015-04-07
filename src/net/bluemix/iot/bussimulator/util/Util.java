@@ -10,6 +10,7 @@ import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
+import java.util.Random;
 import java.util.TimeZone;
 
 import net.bluemix.iot.bussimulator.BusSimulator;
@@ -95,5 +96,11 @@ public class Util {
 	    df.setTimeZone(tz);
 	    String nowAsISO = df.format(new Date());
 	    return nowAsISO;
+	}
+	
+	public static boolean probabilityHit(int percent){
+		double decPercent = (double) percent / 100;
+		Random random = new Random();
+		return decPercent >= random.nextDouble();
 	}
 }

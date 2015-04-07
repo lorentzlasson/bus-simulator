@@ -24,9 +24,8 @@ public class MqttLayer implements MqttCallback {
 	private static final String allCmdTopic		=	"iot-2/type/+/id/+/cmd/+/fmt/json";
 	
 	private MqttClient client;
-	private BusSimulator busManager;
 
-	public MqttLayer(BusSimulator busManager) {
+	public MqttLayer() {
 		
 		String org = BusSimulator.iotfCredentials.getProperty("org");
 		String apiKey = BusSimulator.iotfCredentials.getProperty("apiKey");
@@ -35,7 +34,6 @@ public class MqttLayer implements MqttCallback {
 		String broker = "tcp://"+org+".messaging.internetofthings.ibmcloud.com:1883";
 		String clientId = "a:"+org+":bussimulator";
 		
-		this.busManager = busManager;
 		try {
 			client = new MqttClient(broker, clientId, new MemoryPersistence());
 			MqttConnectOptions options = new MqttConnectOptions();
@@ -66,7 +64,7 @@ public class MqttLayer implements MqttCallback {
 				String number = Util.jsonValueFromAttribute(stringPayload, "number");
 				System.out.printf("Command: %s ", topicParts[6]);
 				System.out.printf("route: %s\n", number);
-				busManager.addBus(number);
+				BusSimulator.addBus(number);
 			}
 		}
 	}
