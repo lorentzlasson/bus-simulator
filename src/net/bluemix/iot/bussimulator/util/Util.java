@@ -1,8 +1,5 @@
 package net.bluemix.iot.bussimulator.util;
 
-import java.io.BufferedReader;
-import java.io.InputStream;
-import java.io.InputStreamReader;
 import java.lang.reflect.Array;
 import java.security.InvalidParameterException;
 import java.text.DateFormat;
@@ -12,9 +9,6 @@ import java.util.Date;
 import java.util.List;
 import java.util.Random;
 import java.util.TimeZone;
-
-import net.bluemix.iot.bussimulator.BusSimulator;
-import net.bluemix.iot.bussimulator.model.Coordinate;
 
 import com.google.gson.JsonObject;
 import com.google.gson.JsonParser;
@@ -27,7 +21,7 @@ public class Util {
 	}
 	
 	@SuppressWarnings("unchecked")
-	public static <T> T[] listToArray(List<T> list) throws InvalidParameterException{	
+	public static <T> T[] listToArray(List<T> list) throws InvalidParameterException{
 		Class<?> elementClass = null;
 		if (list.size() > 0) elementClass = list.get(0).getClass();
 		else throw new InvalidParameterException("List is empty");
@@ -50,29 +44,6 @@ public class Util {
 		int indexEnd = json.indexOf("\"", indexStart);
 		String jsonValue = json.substring(indexStart, indexEnd);
 		return jsonValue;
-	}
-	
-	public static Coordinate[] coordinatesFromCsv(String path){
-		BufferedReader br = null;
-		String line = "";
-		String cvsSplitBy = ",";		
-		List<Coordinate> coordinateList = new ArrayList<Coordinate>();
-		InputStream is = BusSimulator.class.getResourceAsStream(path);
-		InputStreamReader isr = new InputStreamReader(is);
-		try {
-			br = new BufferedReader(isr);
-			while ((line = br.readLine()) != null) {
-				// use comma as separator
-				String[] entry = line.split(cvsSplitBy);
-				double latitude = Double.parseDouble(entry[0]);
-				double longitude = Double.parseDouble(entry[1]);
-				coordinateList.add(new Coordinate(latitude, longitude));
-			}
-		} catch (Exception e) {
-			e.printStackTrace();
-		}
-		Coordinate[] coordinates = coordinateList.toArray(new Coordinate[coordinateList.size()]);
-		return coordinates;
 	}
 	
 	public static List<Integer> indexList(int length){
