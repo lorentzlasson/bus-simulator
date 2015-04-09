@@ -60,23 +60,27 @@ public class BusSimulator{
 
 	private void initializeBuses() {
 		String[] busIds = restLayer.getRegisteredBuses();
-		for (String id : busIds) {
-			String number = id.split("bus")[1].split("-")[0]; // between "bus" and "-"
-			try {
-				BusRoute busRoute = dataLayer.getRoute(number);
-				busRoute.enhance();
-				buses.add(new Bus(id, busRoute));
-			} catch (BusSimulatorException e) {
-				e.printStackTrace();
+		if (busIds != null) {
+			for (String id : busIds) {
+				String number = id.split("bus")[1].split("-")[0]; // between "bus" and "-"
+				try {
+					BusRoute busRoute = dataLayer.getRoute(number);
+					busRoute.enhance();
+					buses.add(new Bus(id, busRoute));
+				} catch (BusSimulatorException e) {
+					e.printStackTrace();
+				}
 			}
 		}
 	}
 
 	private void initializeUsers(){
 		String[] userIds = restLayer.getUserIds();
-		for (String id: userIds) {
-			if(id.substring(0, 3).equals("bot")){ // only use bot users for simulation
-				users.add(new User(id));
+		if (userIds != null) {
+			for (String id: userIds) {
+				if(id.substring(0, 3).equals("bot")){ // only use bot users for simulation
+					users.add(new User(id));
+				}
 			}
 		}
 	}

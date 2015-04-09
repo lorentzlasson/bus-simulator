@@ -116,10 +116,10 @@ public class RestLayer {
 			
 		} catch (UnirestException e) {
 			e.printStackTrace();
+			return null;
 		}
-		
-		JsonArray jsonArray = new JsonParser().parse(response.getBody().toString())
-				.getAsJsonArray();
+		String body = response.getBody().toString();
+		JsonArray jsonArray = new JsonParser().parse(body).getAsJsonArray();
 
 		return jsonArrayToStringArray(jsonArray, "id");
 	}
@@ -131,10 +131,10 @@ public class RestLayer {
 			response = Unirest.get(url).asJson();
 		} catch (UnirestException e) {
 			e.printStackTrace();
+			return null;
 		}
-		
-		JsonArray jsonArray = new JsonParser().parse(response.getBody().toString())
-				.getAsJsonArray();
+		String body = response.getBody().toString();
+		JsonArray jsonArray = new JsonParser().parse(body).getAsJsonArray();
 		
 		return jsonArrayToStringArray(jsonArray, "userId");
 	}
