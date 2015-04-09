@@ -75,7 +75,9 @@ public class BusSimulator{
 	private void initializeUsers(){
 		String[] userIds = restLayer.getUserIds();
 		for (String id: userIds) {
-			users.add(new User(id));
+			if(id.substring(0, 3).equals("bot")){ // only use bot users for simulation
+				users.add(new User(id));
+			}
 		}
 	}
 
@@ -107,7 +109,7 @@ public class BusSimulator{
 			for (Bus bus : buses) {
 				MoveEvent event = new MoveEvent(bus);
 				mqtt.publishPosition(event);
-				//				System.out.println(bus.asLocation());
+//				System.out.println(bus.asLocation());
 			}
 		}
 	}
