@@ -16,7 +16,7 @@ import com.mashape.unirest.http.exceptions.UnirestException;
 public class RestLayer {
 
 	private static final String DEVICES_API = "https://internetofthings.ibmcloud.com/api/v0001/organizations";
-	private static final String SOFTHOUSE_API = "http://mvdapiwar.eu-gb.mybluemix.net";
+	private static final String SOFTHOUSE_API = "http://mvdapiwar.mybluemix.net";
 		
 	public String registerNewBus(String number){
 		int index = getNextBusIndex(number);
