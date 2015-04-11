@@ -29,10 +29,7 @@ public class BusSimulator{
 	private static final long INTERVAL_SENSOR		= 10 * 1000;
 	private static final long INTERVAL_USER_STATUS	= 10 * 1000;
 	private static final long INTERVAL_HEARTBEAT	= 60 * 1000;
-	private static long lastUserEvent;
-	private static long lastSensorEvent;
-	private static long lastUserStatusEvent;
-	private static long lastHeartbeatEvent;
+	private static long lastUserEvent, lastSensorEvent, lastUserStatusEvent, lastHeartbeatEvent;
 
 	public static final String TYPE_ID 				= "vehicle";
 	public static final int BUS_STOP_DURATION 		= 10;	// ticks
