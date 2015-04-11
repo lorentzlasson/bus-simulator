@@ -20,7 +20,6 @@ import com.google.gson.JsonObject;
 
 public class MqttLayer implements MqttCallback {
 	
-	
 	private static final String pubTopic		=	"iot-2/type/%s/id/%s/evt/%s/fmt/json";
 	private static final String pubTopicCmd		=	"iot-2/type/%s/id/%s/cmd/%s/fmt/json";
 	private static final String allCmdTopic		=	"iot-2/type/+/id/+/cmd/+/fmt/json";
