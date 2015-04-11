@@ -53,7 +53,7 @@ public class Bus {
 
 		if (getLocation().isStation()) {
 			if (stoppedTimer == BusSimulator.BUS_STOP_DURATION) {
-				System.out.printf("%s stopped at %d\n", id, routeLocation);
+//				System.out.printf("%s stopped at %d\n", id, routeLocation);
 				openDoors();
 			}
 			if (stoppedTimer <= 0) {
@@ -111,14 +111,6 @@ public class Bus {
 	}
 
 	private void letPassengersOff(){
-		//		for (int i = passengers.size() - 1; i >= 0; i--) {
-		//			if (Util.probabilityHit(BusSimulator.LEAVE_BUS_PROB)) {
-		//				User passenger = passengers.get(i);
-		//				passenger.setOnBus(null);
-		//				passengers.remove(passenger);
-		//			}
-		//		}
-
 		for (User user: passengers) {
 			if (Util.probabilityHit(BusSimulator.LEAVE_BUS_PROB)) {
 				user.setOnBus(null);
