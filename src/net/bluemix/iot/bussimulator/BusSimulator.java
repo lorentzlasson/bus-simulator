@@ -13,6 +13,7 @@ import net.bluemix.iot.bussimulator.data.DataLayer;
 import net.bluemix.iot.bussimulator.exception.BusSimulatorException;
 import net.bluemix.iot.bussimulator.model.Bus;
 import net.bluemix.iot.bussimulator.model.BusRoute;
+import net.bluemix.iot.bussimulator.model.Coordinate;
 import net.bluemix.iot.bussimulator.model.User;
 import net.bluemix.iot.bussimulator.model.event.MoveEvent;
 import net.bluemix.iot.bussimulator.model.event.SensorEvent;
@@ -78,7 +79,7 @@ public class BusSimulator{
 		String[] userIds = restLayer.getUserIds();
 		if (userIds != null) {
 			for (String id: userIds) {
-				if(id.substring(0, 3).equals("bot")){ // only use bot users for simulation
+				if(id.contains("bot")){ // only use bot users for simulation
 					users.add(new User(id));
 				}
 			}
@@ -120,6 +121,7 @@ public class BusSimulator{
 
 	private void publishBusSensors(long now){
 		if (now - lastSensorEvent > INTERVAL_SENSOR) {
+			mqtt.publishTestCommand();
 			Random random = new Random();
 			for (Bus bus : buses) {
 				SensorEvent event = new SensorEvent(bus);
@@ -139,6 +141,15 @@ public class BusSimulator{
 			}
 			lastHeartbeatEvent = now;
 		}
+	}
+	
+	private static Bus getBus(String id){
+		for (Bus bus : buses) {
+			if (bus.getId().equals(id)) {
+				return bus;
+			}
+		}
+		return null;
 	}
 
 	private void loadCredentials() {
@@ -184,6 +195,22 @@ public class BusSimulator{
 			buses.add(bus);
 		} catch (BusSimulatorException e) {
 			e.printStackTrace();
+		}
+	}
+	
+	public static void placeBus(String id, int busStopIndex) {
+		Bus bus = getBus(id);
+		if (bus != null) {
+			int index = 0;
+			Coordinate[] coords = bus.getCoordinates();
+			for (int i = 0; i < coords.length; i++) {
+				if (coords[i].isStation()) {
+					if (index == busStopIndex) {
+						bus.setRouteLocation(i);
+					}
+					index++;
+				}
+			}
 		}
 	}
 

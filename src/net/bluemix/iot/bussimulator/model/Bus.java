@@ -77,6 +77,10 @@ public class Bus {
 	public Coordinate getLocation(){
 		return busRoute.location(routeLocation);
 	}
+	
+	public Coordinate[] getCoordinates(){
+		return busRoute.getCoordinates();
+	}
 
 	public String getNumber(){
 		return busRoute.getNumber();

@@ -22,7 +22,9 @@ public class MqttLayer implements MqttCallback {
 	
 	
 	private static final String pubTopic		=	"iot-2/type/%s/id/%s/evt/%s/fmt/json";
+	private static final String pubTopicCmd		=	"iot-2/type/%s/id/%s/cmd/%s/fmt/json";
 	private static final String allCmdTopic		=	"iot-2/type/+/id/+/cmd/+/fmt/json";
+	private static final String allEvtTopic		=	"iot-2/type/+/id/+/evt/+/fmt/json";
 	
 	private MqttClient client;
 
@@ -44,6 +46,7 @@ public class MqttLayer implements MqttCallback {
 			System.out.println("Connected to "+broker);
 			client.setCallback(this);
 			client.subscribe(allCmdTopic);
+			client.subscribe(allEvtTopic);
 		} catch (MqttException e) {
 			e.printStackTrace();
 		}
@@ -53,18 +56,23 @@ public class MqttLayer implements MqttCallback {
 		String stringPayload = new String(message.getPayload());
 		String[] topicParts = topic.split("/");
 		String part5 = topicParts[5];
+		JsonObject jsonData = Util.fromDeviceFormat(stringPayload);
 		if (part5.equals("evt")) {
 			String event = topicParts[6];
 			if (event.equals("position")) {
-				System.out.printf("Position: %s\n", stringPayload);
+				System.out.printf("Position: %s\n", jsonData);
 			}
 		}
 		else if (part5.equals("cmd")) {
+			System.out.printf("Command: %s ", topicParts[6]);
 			if (topicParts[6].equalsIgnoreCase("new_bus")) {
-				String number = Util.jsonValueFromAttribute(stringPayload, "number");
-				System.out.printf("Command: %s ", topicParts[6]);
-				System.out.printf("route: %s\n", number);
+				String number = jsonData.get("number").getAsString();
 				BusSimulator.addBus(number);
+			}
+			else if (topicParts[6].equalsIgnoreCase("reset_bus")) {
+				String id = topicParts[4];
+				int busStopIndex = jsonData.get("busStopIndex").getAsInt();
+				BusSimulator.placeBus(id, busStopIndex);
 			}
 		}
 	}
@@ -117,6 +125,23 @@ public class MqttLayer implements MqttCallback {
 		MqttMessage message = new MqttMessage(Util.toDeviceFormat(jsonMessage).getBytes());
 		message.setQos(0);
 		String topic = String.format(pubTopic, BusSimulator.TYPE_ID, bus.getId(), "status");
+		
+		try {
+			client.publish(topic, message);
+		} catch (MqttException e) {
+			e.printStackTrace();
+		}
+	}
+	
+	public void publishTestCommand() {
+		JsonObject jsonObject = new JsonObject();
+		jsonObject.addProperty("busStopIndex", 0);
+		
+		String jsonMessage = jsonObject.toString();
+		MqttMessage message = new MqttMessage(Util.toDeviceFormat(jsonMessage).getBytes());
+		message.setQos(0);
+		
+		String topic = String.format(pubTopicCmd, BusSimulator.TYPE_ID, "bus3-1", "reset_bus");
 		
 		try {
 			client.publish(topic, message);

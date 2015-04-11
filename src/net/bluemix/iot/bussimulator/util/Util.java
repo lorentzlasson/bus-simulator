@@ -20,6 +20,11 @@ public class Util {
 		return deviceFormatted;
 	}
 	
+	public static JsonObject fromDeviceFormat(String data){
+		JsonObject jsonObject = new JsonParser().parse(data).getAsJsonObject();
+		return jsonObject.get("d").getAsJsonObject();
+	}
+	
 	@SuppressWarnings("unchecked")
 	public static <T> T[] listToArray(List<T> list) throws InvalidParameterException{
 		Class<?> elementClass = null;
