@@ -27,9 +27,11 @@ public class BusSimulator{
 	private static final long INTERVAL_TICK		 	= 1  * 1000;
 	private static final long INTERVAL_POSITION 	= 1  * 1000;
 	private static final long INTERVAL_SENSOR		= 10 * 1000;
+	private static final long INTERVAL_USER_STATUS	= 10 * 1000;
 	private static final long INTERVAL_HEARTBEAT	= 60 * 1000;
 	private static long lastUserEvent;
 	private static long lastSensorEvent;
+	private static long lastUserStatusEvent;
 	private static long lastHeartbeatEvent;
 
 	public static final String TYPE_ID 				= "vehicle";
@@ -93,6 +95,7 @@ public class BusSimulator{
 			tickBuses();			
 			publishBusPositions(now);
 			publishBusSensors(now);
+			publishBusPassengers(now);
 			publishBusHeartbeats(now);
 
 			try {
@@ -121,7 +124,7 @@ public class BusSimulator{
 
 	private void publishBusSensors(long now){
 		if (now - lastSensorEvent > INTERVAL_SENSOR) {
-			mqtt.publishTestCommand();
+//			mqtt.publishTestCommand();
 			Random random = new Random();
 			for (Bus bus : buses) {
 				SensorEvent event = new SensorEvent(bus);
@@ -132,6 +135,15 @@ public class BusSimulator{
 			}
 			lastSensorEvent = now;
 		}
+	}
+	
+	private void publishBusPassengers(long now) {
+		if (now - lastUserStatusEvent > INTERVAL_USER_STATUS) {
+			for (Bus bus : buses) {
+				mqtt.publishPassengers(bus);				
+			}
+			lastUserStatusEvent = now;
+		}		
 	}
 
 	private void publishBusHeartbeats(long now) {

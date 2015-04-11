@@ -89,6 +89,10 @@ public class Bus {
 	public String getId() {
 		return id;
 	}
+	
+	public int getPassangerAmount(){
+		return passengers.size();
+	}
 
 	public String toString() {
 		String representaton = String.format("[Number: %s, Direction: %s]", busRoute.getNumber(), direction);

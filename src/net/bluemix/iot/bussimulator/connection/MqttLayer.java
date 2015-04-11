@@ -24,7 +24,7 @@ public class MqttLayer implements MqttCallback {
 	private static final String pubTopic		=	"iot-2/type/%s/id/%s/evt/%s/fmt/json";
 	private static final String pubTopicCmd		=	"iot-2/type/%s/id/%s/cmd/%s/fmt/json";
 	private static final String allCmdTopic		=	"iot-2/type/+/id/+/cmd/+/fmt/json";
-	private static final String allEvtTopic		=	"iot-2/type/+/id/+/evt/+/fmt/json";
+//	private static final String allEvtTopic		=	"iot-2/type/+/id/+/evt/+/fmt/json";
 	
 	private MqttClient client;
 
@@ -46,7 +46,7 @@ public class MqttLayer implements MqttCallback {
 			System.out.println("Connected to "+broker);
 			client.setCallback(this);
 			client.subscribe(allCmdTopic);
-			client.subscribe(allEvtTopic);
+//			client.subscribe(allEvtTopic);
 		} catch (MqttException e) {
 			e.printStackTrace();
 		}
@@ -108,6 +108,24 @@ public class MqttLayer implements MqttCallback {
 		MqttMessage message = new MqttMessage(Util.toDeviceFormat(jsonMessage).getBytes());
 		message.setQos(0);
 		String topic = String.format(pubTopic, BusSimulator.TYPE_ID, event.getVehicleId(), "sensor");
+		
+		try {
+			client.publish(topic, message);
+		} catch (MqttException e) {
+			e.printStackTrace();
+		}
+	}
+	
+	public void publishPassengers(Bus bus) {
+		JsonObject jsonObject = new JsonObject();
+		int passangerAmount = bus.getPassangerAmount();
+		jsonObject.addProperty("passangersAmount", passangerAmount);
+		
+		String jsonMessage = jsonObject.toString();
+		MqttMessage message = new MqttMessage(Util.toDeviceFormat(jsonMessage).getBytes());
+		message.setQos(0);
+		
+		String topic = String.format(pubTopic, BusSimulator.TYPE_ID, bus.getId(), "passengers");
 		
 		try {
 			client.publish(topic, message);
